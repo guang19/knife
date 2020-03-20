@@ -7,7 +7,7 @@ import java.util.Collection;
  * @date 2020/3/18
  * @description <p>判空工具类</p>
  */
-public class EmptyUtil
+public class AssertUtil
 {
 
     /**
@@ -19,7 +19,7 @@ public class EmptyUtil
     {
         if(str == null || str.isEmpty())
         {
-            throw new NullPointerException(message);
+            throw new IllegalArgumentException(message);
         }
     }
 
@@ -32,7 +32,7 @@ public class EmptyUtil
     {
         if(collection == null || collection.isEmpty())
         {
-            throw new NullPointerException(message);
+            throw new IllegalArgumentException(message);
         }
     }
 

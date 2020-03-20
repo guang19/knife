@@ -117,19 +117,19 @@ public class BeanUtil
          *
          *   BeanFieldValTypeConverter converter = field ->
          *   {
-         *       //如果当前拷贝的属性值是age属性
+         *       //如果当前拷贝的属性值是 age 属性
          *       if(field instanceof Integer)
          *       {
          *           return (Integer)field;
          *       }
          *
-         *       //如果当前拷贝的属性值是id属性
+         *       //如果当前拷贝的属性值是 id 属性
          *       if(fieldVal instanceof Long)
          *       {
          *           return (Long) fieldVal;
          *       }
          *
-         *       //如果当前拷贝的属性值是Inner属性
+         *       //如果当前拷贝的属性值是 Inner 属性
          *       if(fieldVal instanceof Inner)
          *       {
          *           return fieldVal.toString();
@@ -169,8 +169,8 @@ public class BeanUtil
      */
     public static <S,T> void copyProperties(S sourceObj,T targetObj,BeanFieldValTypeConverter beanFieldValTypeConverter)
     {
-        EmptyUtil.assertObjNull(sourceObj,"source object cannot be null.");
-        EmptyUtil.assertObjNull(targetObj,"target object cannot be null.");
+        AssertUtil.assertObjNull(sourceObj,"source object cannot be null.");
+        AssertUtil.assertObjNull(targetObj,"target object cannot be null.");
         copy(sourceObj,targetObj,beanFieldValTypeConverter);
     }
 
@@ -204,8 +204,8 @@ public class BeanUtil
      */
     public static <S,T> List<T> copyCollection(List<S> sourceCollection, Class<T> targetCollectionElementType,BeanFieldValTypeConverter beanFieldValTypeConverter)
     {
-        EmptyUtil.assertObjNull(sourceCollection,"source collection cannot be null");
-        EmptyUtil.assertObjNull(targetCollectionElementType,"target collection element type cannot be null");
+        AssertUtil.assertObjNull(sourceCollection,"source collection cannot be null");
+        AssertUtil.assertObjNull(targetCollectionElementType,"target collection element type cannot be null");
         return sourceCollection.
                 stream().
                 map(element ->
@@ -259,8 +259,8 @@ public class BeanUtil
      */
     public static <S,T> Set<T> copyCollection(Set<S> sourceCollection, Class<T> targetCollectionElementType,BeanFieldValTypeConverter beanFieldValTypeConverter)
     {
-        EmptyUtil.assertObjNull(sourceCollection,"source collection cannot be null");
-        EmptyUtil.assertObjNull(targetCollectionElementType,"target collection element type cannot be null");
+        AssertUtil.assertObjNull(sourceCollection,"source collection cannot be null");
+        AssertUtil.assertObjNull(targetCollectionElementType,"target collection element type cannot be null");
         return sourceCollection.
                 stream().
                 map(element ->
@@ -313,8 +313,8 @@ public class BeanUtil
      */
     public static <S,T> T createTargetObj(S sourceObj,Class<T> targetClass,BeanFieldValTypeConverter beanFieldValTypeConverter)
     {
-        EmptyUtil.assertObjNull(sourceObj,"source object cannot be null.");
-        EmptyUtil.assertObjNull(targetClass,"target class cannot be null.");
+        AssertUtil.assertObjNull(sourceObj,"source object cannot be null.");
+        AssertUtil.assertObjNull(targetClass,"target class cannot be null.");
         try
         {
             return create(sourceObj,targetClass,beanFieldValTypeConverter);
@@ -341,7 +341,7 @@ public class BeanUtil
             throws Throwable
     {
         //以默认构造器创建目标对象
-        T target = ClassUtil.createInstanceWithDefaultConstructor(targetClass);
+        T target = ReflectionUtil.createInstanceWithDefaultConstructor(targetClass);
         copy(sourceObj,target,beanFieldValTypeConverter);
         return target;
     }
