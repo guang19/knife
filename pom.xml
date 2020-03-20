@@ -7,13 +7,59 @@
     <groupId>com.github.guang19</groupId>
     <artifactId>knife</artifactId>
     <version>1.0.0</version>
+    <name>knife utils</name>
     <description>小刀锋利工具类</description>
 
     <properties>
+        <java.version>1.8</java.version>
         <slf4j.version>1.7.30</slf4j.version>
         <log4j2.version>2.13.1</log4j2.version>
+
+        <!--maven plugin-->
+        <maven-compiler.version>3.8.1</maven-compiler.version>
+        <maven-source.version>3.2.1</maven-source.version>
+        <maven-javadoc.version>3.0.1</maven-javadoc.version>
+        <maven-gpg.version>1.6</maven-gpg.version>
     </properties>
 
+    <url>https://github.com/guang19/knife</url>
+
+    <!--licenses-->
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <!--developers-->
+    <developers>
+        <developer>
+            <name>yangguang</name>
+            <email>2196927727@qq.com</email>
+        </developer>
+    </developers>
+
+    <!--发布的仓库地址-->
+    <distributionManagement>
+        <snapshotRepository>
+            <id>oss</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>oss</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <!--scm-->
+    <scm>
+        <url>https://github.com/guang19/knife.git</url>
+        <connection>scm:https://github.com/guang19/knife.git</connection>
+        <developerConnection>https://github.com/guang19/knife.git</developerConnection>
+    </scm>
+
+    <!--依赖-->
     <dependencies>
         <!--cglib-->
         <dependency>
@@ -27,30 +73,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
-        </dependency>
-
-        <!--lgo4j2-->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${log4j2.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4j2.version}</version>
-        </dependency>
-        <!--log4j2 bing slf4j-->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
-            <version>${log4j2.version}</version>
-        </dependency>
-        <!--log4j bridge slf4j-->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-jcl</artifactId>
-            <version>${log4j2.version}</version>
         </dependency>
 
         <!--lombok-->
@@ -75,13 +97,92 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>${maven-compiler.version}</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>*.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
     </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <!--maven compiler-->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>${maven-compiler.version}</version>
+                        <configuration>
+                            <source>${java.version}</source>
+                            <target>${java.version}</target>
+                            <encoding>UTF-8</encoding>
+                        </configuration>
+                    </plugin>
+
+                    <!--maven source-->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>${maven-source.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!--java doc-->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${maven-javadoc.version}</version>
+                        <configuration>
+                            <failOnError>false</failOnError>
+                            <doclint>none</doclint>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!--gpg-->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${maven-gpg.version}</version>
+                        <executions>
+                            <execution>
+                                <id>oss</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
