@@ -116,6 +116,7 @@ public class SnowFlakeIdGenerator54 extends AbstractSnowflakeIdGenerator
      */
     public SnowFlakeIdGenerator54(long machineId, long backupMachineId)
     {
+        super();
         //machine id 不能超出范围
         if(machineId < MIN_MACHINE_ID || machineId > MAX_MACHINE_ID)
         {
@@ -128,30 +129,23 @@ public class SnowFlakeIdGenerator54 extends AbstractSnowflakeIdGenerator
         }
         this.MACHINE_ID = machineId;
         this.BACKUP_MACHINE_ID = backupMachineId;
-        LOGGER.info("The snowflake ID generator with machine id {} is ready , it's backup machine id is {} .",MACHINE_ID,BACKUP_MACHINE_ID);
+        LOGGER.info("The snowflake id generator with machine id {} is ready , it's backup machine id is {} .",MACHINE_ID,BACKUP_MACHINE_ID);
     }
 
+
     /**
-     * 生成 long 类型的id
-     * @return  id
+     *  生成54位的雪花Id
+     *
+     * @return Id
      */
     @Override
-    public long generateId()
-    {
-        return nextId();
-    }
-
-    /**
-     * 生成Id
-     * @return      递增ID
-     */
-    private synchronized long nextId()
+    protected synchronized long nextId()
     {
         long curTimestamp = currentMillisTimestamp();
         //如果时钟回拨
         if(curTimestamp < lastTimestamp)
         {
-            LOGGER.warn("system clock moved backwards, last: {}, now: {} .",lastTimestamp,curTimestamp);
+            LOGGER.warn("system clock moved backwards , last: {} , now: {} .",lastTimestamp,curTimestamp);
             //启用备用机器生成ID
             return nextBackId(curTimestamp);
         }
@@ -165,7 +159,7 @@ public class SnowFlakeIdGenerator54 extends AbstractSnowflakeIdGenerator
                 lastTimestamp = curTimestamp = untilNextMillis(lastTimestamp);
             }
         }
-        //时间戳正常就更新 lastTimestamp 并重置当前毫秒内的自增序列
+        //时间戳正常就更新 lastTimestamp ,并重置当前毫秒内的自增序列
         else
         {
             lastTimestamp = curTimestamp;
@@ -188,15 +182,16 @@ public class SnowFlakeIdGenerator54 extends AbstractSnowflakeIdGenerator
             //如果当前回拨时间超过1s,直接抛出异常
             if(backupMachineLastTimestamp - curTimestamp > MAX_BACKWARD_TIME)
             {
-                throw new IllegalStateException(String.format("system clock moved backwards, last: %d , now: %d .",lastTimestamp,curTimestamp));
+                throw new IllegalStateException(String.format("system clock moved backwards more than 1 second , last: %d , now: %d .",backupMachineLastTimestamp,curTimestamp));
             }
             else
             {
-                curTimestamp = backupMachineLastTimestamp;
+                backupMachineLastTimestamp = curTimestamp = (backupMachineLastTimestamp + (backupMachineLastTimestamp - curTimestamp));
+                backupMachineCurMillSequence = 0L;
             }
         }
         //如果时间戳相同，就自增毫秒序列
-        if(curTimestamp == backupMachineLastTimestamp)
+        else if(curTimestamp == backupMachineLastTimestamp)
         {
             //如果备份机器的当前自增序列用尽，就阻塞到下一毫秒
             if(0L == (backupMachineCurMillSequence = ((++backupMachineCurMillSequence) & MAX_INCR_SEQUENCE_BIT)))

@@ -39,8 +39,23 @@ public abstract class AbstractSnowflakeIdGenerator implements IdGenerator
         }
     }
 
+
+    /**
+     * 生成 long 类型的id
+     *
+     * @return id
+     */
     @Override
-    public abstract long generateId();
+    public long generateId()
+    {
+        return nextId();
+    }
+
+    /**
+     * 子类只需要完成这个nextId的逻辑就行了
+     * @return  生成雪花Id
+     */
+    protected abstract long nextId();
 
     /**
      * 获取当前毫秒级的时间戳,此方法待扩展

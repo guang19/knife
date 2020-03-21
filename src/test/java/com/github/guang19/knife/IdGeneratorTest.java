@@ -5,7 +5,12 @@ import com.github.guang19.knife.idgenerator.SnowFlakeIdGenerator54;
 import com.github.guang19.knife.idgenerator.SnowFlakeIdGenerator64;
 import org.junit.Test;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author yangguang
@@ -70,5 +75,40 @@ public class IdGeneratorTest
         System.out.println(idGenerator64.generateId());
 
         //当然，时间戳的范围是可以改的，只不过我所优化过的就是以上这么大的范围了
+    }
+
+    @Test
+    public void test04() throws Exception
+    {
+        SnowFlakeIdGenerator64 idGenerator54 = new SnowFlakeIdGenerator64(0,512);
+        Map<String ,Long> map = new ConcurrentHashMap<>();
+        for (int i = 0 ; i < 50; ++i)
+        {
+            new Thread(()->
+            {
+                for (int j = 0 ; j < 10000; ++j)
+                {
+                    long id = idGenerator54.generateId();
+                    map.put(String.valueOf(id),id);
+
+                }
+            }).start();
+        }
+
+        TimeUnit.SECONDS.sleep(3);
+
+        System.out.println(map.size());
+
+        System.out.println(" -------------- ");
+
+    }
+
+    @Test
+    public void test05() throws Exception
+    {
+        long id = System.currentTimeMillis();
+        TimeUnit.SECONDS.sleep(1);
+        System.out.println(System.currentTimeMillis() - id);
+        System.out.println(System.currentTimeMillis());
     }
 }
