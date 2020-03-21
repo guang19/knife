@@ -19,6 +19,6 @@ maven:
 ````text
  <groupId>com.github.guang19</groupId>
  <artifactId>knife</artifactId>
- <version>1.0.0</version>
+ <version>1.0.1</version>
 ````
 
