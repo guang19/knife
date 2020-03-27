@@ -1,6 +1,5 @@
 package com.github.guang19.knife;
 
-import com.github.guang19.knife.BeanUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,9 +7,6 @@ import lombok.ToString;
 import net.sf.cglib.beans.BeanCopier;
 import org.junit.Test;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.util.*;
 
 /**
@@ -69,7 +65,7 @@ public class BeanUtilTest
 
         Person2 person2 = new Person2();
 
-        BeanUtil.copyProperties(person1,person2);
+        BeanUtils.copyProperties(person1,person2);
 
         //true, 浅拷贝
         System.out.println(person1.getInner() == person2.getInner());
@@ -86,7 +82,7 @@ public class BeanUtilTest
         person1.setName("yxg");
         person1.setInner(new Inner());
 
-        System.out.println(BeanUtil.createTargetObj(person1,Person2.class));
+        System.out.println(BeanUtils.createTargetObj(person1,Person2.class));
     }
 
     @Setter
@@ -156,7 +152,7 @@ public class BeanUtilTest
         person1.setInner(new Inner());
 
         Person3 person3 = new Person3();
-        BeanUtil.copyProperties(person1,person3,fieldVal -> {
+        BeanUtils.copyProperties(person1,person3, fieldVal -> {
             if(fieldVal instanceof Integer)
             {
                 return (Integer) fieldVal;
@@ -187,7 +183,7 @@ public class BeanUtilTest
 
 //        System.out.println(BeanUtil.createTargetObj(person1,Person3.class));
 
-        System.out.println(BeanUtil.createTargetObj(person1,Person3.class,fieldVal -> {
+        System.out.println(BeanUtils.createTargetObj(person1,Person3.class, fieldVal -> {
             if(fieldVal instanceof Integer)
             {
                 return (Integer) fieldVal;
@@ -223,14 +219,14 @@ public class BeanUtilTest
         person1List.add(person1);
         person1List.add(person2);
 
-        List<Person2> person2List = BeanUtil.copyCollection(person1List, Person2.class);
+        List<Person2> person2List = BeanUtils.copyCollection(person1List, Person2.class);
         System.out.println(person2List);
 
         Set<Person1> person1Set = new HashSet<>();
         person1Set.add(person1);
         person1Set.add(person2);
 
-        Set<Person2> person2Set = BeanUtil.copyCollection(person1Set,Person2.class);
+        Set<Person2> person2Set = BeanUtils.copyCollection(person1Set,Person2.class);
 
         System.out.println(person2Set);
     }
@@ -253,7 +249,7 @@ public class BeanUtilTest
         List<Person1> person1List = new ArrayList<>(Arrays.asList(person1,person2));
         System.out.println("person1List : " + person1List);
 
-        List<Person3> person3List = BeanUtil.copyCollection(person1List,Person3.class,(fieldVal ->
+        List<Person3> person3List = BeanUtils.copyCollection(person1List,Person3.class,(fieldVal ->
         {
             if(fieldVal instanceof Integer)
             {
@@ -274,7 +270,7 @@ public class BeanUtilTest
         Set<Person1> person1Set = new HashSet<>(Arrays.asList(person1,person2));
         System.out.println("person1Set : " + person1Set);
 
-        Set<Person3> person3Set = BeanUtil.copyCollection(person1Set,Person3.class,(fieldVal ->
+        Set<Person3> person3Set = BeanUtils.copyCollection(person1Set,Person3.class,(fieldVal ->
         {
             if(fieldVal instanceof Integer)
             {

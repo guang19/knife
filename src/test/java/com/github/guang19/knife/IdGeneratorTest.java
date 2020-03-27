@@ -1,13 +1,10 @@
 package com.github.guang19.knife;
 
 import com.github.guang19.knife.idgenerator.IdGenerator;
-import com.github.guang19.knife.idgenerator.SnowFlakeIdGenerator54;
-import com.github.guang19.knife.idgenerator.SnowFlakeIdGenerator64;
+import com.github.guang19.knife.idgenerator.impl.SnowFlakeIdGenerator54;
+import com.github.guang19.knife.idgenerator.impl.SnowFlakeIdGenerator64;
 import org.junit.Test;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -106,9 +103,20 @@ public class IdGeneratorTest
     @Test
     public void test05() throws Exception
     {
-        long id = System.currentTimeMillis();
+        System.out.println((1L << 41) / (1000L * 60 * 60 * 24 * 365));
+        System.out.println((1L << 37) / (1000L * 60 * 60 * 24 * 365));
+        System.out.println((1L << 38) / (1000L * 60 * 60 * 24 * 365));
+
+        long l = System.currentTimeMillis();
+
         TimeUnit.SECONDS.sleep(1);
-        System.out.println(System.currentTimeMillis() - id);
-        System.out.println(System.currentTimeMillis());
+        System.out.println(System.currentTimeMillis() - l);
+    }
+
+    @Test
+    public void test06() throws Exception
+    {
+        Process clock_gettime = Runtime.getRuntime().exec("clock_gettime");
+        System.out.println(clock_gettime.exitValue());
     }
 }

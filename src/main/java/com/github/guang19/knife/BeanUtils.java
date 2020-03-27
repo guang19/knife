@@ -1,5 +1,6 @@
 package com.github.guang19.knife;
 
+import com.github.guang19.knife.reflectionutils.ReflectionUtils;
 import net.sf.cglib.beans.BeanCopier;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
  * @date 2020/3/18
  * @description <p>Bean工具类</p>
  */
-public class BeanUtil
+public class BeanUtils
 {
 
     //使用过的BeanCopier将加入缓存
@@ -21,17 +22,8 @@ public class BeanUtil
 
     static
     {
-        beanCopierCache = new ConcurrentHashMap<String, BeanCopier>();
+        beanCopierCache = new ConcurrentHashMap<>();
     }
-
-    //BeanCopier缓存key的前缀
-    private static final String BEANCOPIER_CACHE_KEY_PREFIX = "BEANCOPIER:";
-
-    //BeanCopier缓存key的连接符
-    private static final String CONNECTION_SYNBOL = "::";
-
-    //BeanCopier缓存key的后缀
-    private static final String BEANCOPIER_CACHE_KEY_SUFFIX = "USE:BeanFieldValTypeConverter";
 
 
     /**
@@ -169,8 +161,8 @@ public class BeanUtil
      */
     public static <S,T> void copyProperties(S sourceObj,T targetObj,BeanFieldValTypeConverter beanFieldValTypeConverter)
     {
-        AssertUtil.assertObjNull(sourceObj,"source object cannot be null.");
-        AssertUtil.assertObjNull(targetObj,"target object cannot be null.");
+        AssertUtils.exceptionIfObjNull(sourceObj,"source object cannot be null.");
+        AssertUtils.exceptionIfObjNull(targetObj,"target object cannot be null.");
         copy(sourceObj,targetObj,beanFieldValTypeConverter);
     }
 
@@ -204,8 +196,8 @@ public class BeanUtil
      */
     public static <S,T> List<T> copyCollection(List<S> sourceCollection, Class<T> targetCollectionElementType,BeanFieldValTypeConverter beanFieldValTypeConverter)
     {
-        AssertUtil.assertObjNull(sourceCollection,"source collection cannot be null");
-        AssertUtil.assertObjNull(targetCollectionElementType,"target collection element type cannot be null");
+        AssertUtils.exceptionIfObjNull(sourceCollection,"source collection cannot be null.");
+        AssertUtils.exceptionIfObjNull(targetCollectionElementType,"target collection element type cannot be null.");
         return sourceCollection.
                 stream().
                 map(element ->
@@ -259,8 +251,8 @@ public class BeanUtil
      */
     public static <S,T> Set<T> copyCollection(Set<S> sourceCollection, Class<T> targetCollectionElementType,BeanFieldValTypeConverter beanFieldValTypeConverter)
     {
-        AssertUtil.assertObjNull(sourceCollection,"source collection cannot be null");
-        AssertUtil.assertObjNull(targetCollectionElementType,"target collection element type cannot be null");
+        AssertUtils.exceptionIfObjNull(sourceCollection,"source collection cannot be null.");
+        AssertUtils.exceptionIfObjNull(targetCollectionElementType,"target collection element type cannot be null.");
         return sourceCollection.
                 stream().
                 map(element ->
@@ -313,8 +305,8 @@ public class BeanUtil
      */
     public static <S,T> T createTargetObj(S sourceObj,Class<T> targetClass,BeanFieldValTypeConverter beanFieldValTypeConverter)
     {
-        AssertUtil.assertObjNull(sourceObj,"source object cannot be null.");
-        AssertUtil.assertObjNull(targetClass,"target class cannot be null.");
+        AssertUtils.exceptionIfObjNull(sourceObj,"source object cannot be null.");
+        AssertUtils.exceptionIfObjNull(targetClass,"target class cannot be null.");
         try
         {
             return create(sourceObj,targetClass,beanFieldValTypeConverter);
@@ -322,8 +314,8 @@ public class BeanUtil
         catch (Throwable e)
         {
             //不做处理
+            return null;
         }
-        return null;
     }
 
 
@@ -341,7 +333,7 @@ public class BeanUtil
             throws Throwable
     {
         //以默认构造器创建目标对象
-        T target = ReflectionUtil.createInstanceWithDefaultConstructor(targetClass);
+        T target = ReflectionUtils.createInstanceWithDefaultConstructor(targetClass);
         copy(sourceObj,target,beanFieldValTypeConverter);
         return target;
     }
@@ -389,14 +381,8 @@ public class BeanUtil
      */
     private static BeanCopier createBeanCopier(Class<?> sourceClass,Class<?> targetClass,BeanFieldValTypeConverter beanFieldValTypeConverter)
     {
-        if(beanFieldValTypeConverter == null)
-        {
-            return BeanCopier.create(sourceClass,targetClass,false);
-        }
-        else
-        {
-            return BeanCopier.create(sourceClass,targetClass,true);
-        }
+        return beanFieldValTypeConverter == null ? BeanCopier.create(sourceClass,targetClass,false) :
+                BeanCopier.create(sourceClass,targetClass,true);
     }
 
     /**
@@ -408,13 +394,17 @@ public class BeanUtil
      */
     private static String generateBeanCopierClassKey(Class<?> clazz1,Class<?> clazz2,BeanFieldValTypeConverter beanFieldValTypeConverter)
     {
-        if(beanFieldValTypeConverter == null)
-        {
-            return BEANCOPIER_CACHE_KEY_PREFIX + clazz1.getName() + CONNECTION_SYNBOL + clazz2.getName();
-        }
-        else
-        {
-            return BEANCOPIER_CACHE_KEY_PREFIX + clazz1.getName() + CONNECTION_SYNBOL + clazz2.getName() + BEANCOPIER_CACHE_KEY_SUFFIX;
-        }
+        return beanFieldValTypeConverter == null ? BEANCOPIER_CACHE_KEY_PREFIX + clazz1.getName() + CONNECTION_SYNBOL + clazz2.getName() :
+                BEANCOPIER_CACHE_KEY_PREFIX + clazz1.getName() + CONNECTION_SYNBOL + clazz2.getName() + BEANCOPIER_CACHE_KEY_SUFFIX;
     }
+
+
+    //BeanCopier缓存key的前缀
+    private static final String BEANCOPIER_CACHE_KEY_PREFIX = "BEANCOPIER:";
+
+    //BeanCopier缓存key的连接符
+    private static final String CONNECTION_SYNBOL = "::";
+
+    //BeanCopier缓存key的后缀
+    private static final String BEANCOPIER_CACHE_KEY_SUFFIX = "USE:BeanFieldValTypeConverter";
 }
