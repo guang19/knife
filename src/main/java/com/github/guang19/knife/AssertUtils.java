@@ -11,6 +11,21 @@ public class AssertUtils
 {
 
     /**
+     * 如果下标超出范围将抛出异常
+     * @param index     下标值
+     * @param min      下标最小值
+     * @param max      下标自大值
+     */
+    public static void exceptionIfIndexOutOfRange(int index, int min, int max)
+    {
+        if(index < min || index > max)
+        {
+            throw new IndexOutOfBoundsException(String.format("index out of range, min index cannot be lower %d , max index cannot be exceed %d.",min,max));
+        }
+    }
+
+
+    /**
      * 如果为字符串null或empty将抛出异常
      * @param str          字符串
      * @param message      异常消息
@@ -109,4 +124,21 @@ public class AssertUtils
     {
         return obj != null;
     }
+
+
+    /**
+     * 判断下标是否超出范围
+     * @param index     下标值
+     * @param min      下标最小值
+     * @param max      下标自大值
+     */
+    public static boolean assertIndexOutOfRange(int index, int min, int max)
+    {
+        if(index < min || index > max)
+        {
+            return false;
+        }
+        return true;
+    }
+
 }

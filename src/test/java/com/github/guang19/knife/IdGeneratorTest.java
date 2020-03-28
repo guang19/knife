@@ -1,8 +1,8 @@
 package com.github.guang19.knife;
 
 import com.github.guang19.knife.idgenerator.IdGenerator;
-import com.github.guang19.knife.idgenerator.impl.SnowFlakeIdGenerator54;
-import com.github.guang19.knife.idgenerator.impl.SnowFlakeIdGenerator64;
+import com.github.guang19.knife.idgenerator.impl.snowflakeidgenerator.SnowFlakeIdGenerator54;
+import com.github.guang19.knife.idgenerator.impl.snowflakeidgenerator.SnowFlakeIdGenerator64;
 import org.junit.Test;
 
 import java.util.Map;

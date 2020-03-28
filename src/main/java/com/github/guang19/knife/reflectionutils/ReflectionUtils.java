@@ -4,6 +4,7 @@ import com.github.guang19.knife.AssertUtils;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -30,7 +31,6 @@ public class ReflectionUtils
     /**
      * 以默认构造器创建对象
      * @param clazz     指定的Class
-     * @param <T>       Class type
      * @return          Class实例
      * @throws Throwable 创建对象过程中的错误或异常，很大几率是反射异常。
      */
@@ -101,7 +101,6 @@ public class ReflectionUtils
      * 获取指定类已声明的构造器
      * @param clazz                 指定的Class
      * @param parameterTypes       参数类型
-     * @param <T>                   Class type
      * @return                      指定的构造器，如果构造器没有声明则为null
      */
     public static <T> Constructor<T> getDeclaredConstructor(Class<T> clazz,Class<?> ...parameterTypes)
@@ -128,6 +127,48 @@ public class ReflectionUtils
     {
         AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
         return clazz.getDeclaredConstructors();
+    }
+
+    /**
+     * 判断指定的类是否有公共的构造器
+     * @param clazz             指定的类
+     * @param parameterTypes    参数类型
+     * @return                  如果有返回true，否则返回false
+     */
+    public static boolean hasPublicConstructor(Class<?> clazz,Class<?> ...parameterTypes)
+    {
+        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
+        AssertUtils.exceptionIfObjNull(parameterTypes,"parameter type cannot be null.");
+        try
+        {
+            return clazz.getConstructor(parameterTypes) != null;
+        }
+        catch (NoSuchMethodException e)
+        {
+            //没有找到构造器
+            return false;
+        }
+    }
+
+    /**
+     * 判断指定的类是否有声明的构造器
+     * @param clazz             指定的类
+     * @param parameterTypes    参数类型
+     * @return                  如果有返回true，否则返回false
+     */
+    public static boolean hasDeclaredConstructor(Class<?> clazz,Class<?> parameterTypes)
+    {
+        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
+        AssertUtils.exceptionIfObjNull(parameterTypes,"parameter type cannot be null.");
+        try
+        {
+            return clazz.getDeclaredConstructor(parameterTypes) != null;
+        }
+        catch (NoSuchMethodException e)
+        {
+            //没有找到构造器
+            return false;
+        }
     }
 
     /***************************************** Method **********************************************************/
@@ -333,7 +374,7 @@ public class ReflectionUtils
      * @param fieldName     字段名
      * @return              getter方法
      */
-    public static Method getGetter(Class<?> clazz,String fieldName)
+    public static Method getGetterMethod(Class<?> clazz,String fieldName)
     {
         AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
         AssertUtils.exceptionIfStrBlank(fieldName,"field name cannot be blank.");
@@ -353,7 +394,7 @@ public class ReflectionUtils
      * @param fieldName     字段名
      * @return              setter方法
      */
-    public static Method getSetter(Class<?> clazz,String fieldName)
+    public static Method getSetterMethod(Class<?> clazz,String fieldName)
     {
         AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
         AssertUtils.exceptionIfStrBlank(fieldName,"field name cannot be blank.");
@@ -367,7 +408,137 @@ public class ReflectionUtils
         }
     }
 
+    /**
+     * 判断指定类是否拥有指定公共方法
+     * @param clazz             类
+     * @param methodName        方法名
+     * @param parameterTypes    参数类型
+     * @return                  是否拥有指定公共方法
+     */
+    public static boolean hasPublicMethod(Class<?> clazz,String methodName,Class<?> ...parameterTypes)
+    {
+        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
+        AssertUtils.exceptionIfStrBlank(methodName,"method name cannot be blank.");
+        AssertUtils.exceptionIfObjNull(parameterTypes,"parameter type cannot be null.");
+        try
+        {
+            return clazz.getMethod(methodName, parameterTypes) != null;
+        }
+        catch (NoSuchMethodException e)
+        {
+            //没有找到方法
+            return false;
+        }
+    }
+
+    /**
+     * 判断指定类是否拥有已声明的方法
+     * @param clazz             类
+     * @param methodName        方法名
+     * @param parameterTypes    参数类型
+     * @return                  是否拥有已声明的方法
+     */
+    public static boolean hasDeclaredMethod(Class<?> clazz,String methodName,Class<?> ...parameterTypes)
+    {
+        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
+        AssertUtils.exceptionIfStrBlank(methodName,"method name cannot be blank.");
+        AssertUtils.exceptionIfObjNull(parameterTypes,"parameter type cannot be null.");
+        try
+        {
+            return clazz.getDeclaredMethod(methodName, parameterTypes) != null;
+        }
+        catch (NoSuchMethodException e)
+        {
+            //没有找到方法
+            return false;
+        }
+    }
+
+
+    /**
+     * 判断类是否有指定的Getter方法
+     * @param clazz         指定的类
+     * @param fieldName     字段名
+     * @return              是否有指定的Getter方法
+     */
+    public static boolean hasGetterMethod(Class<?> clazz,String fieldName)
+    {
+        return getGetterMethod(clazz,fieldName) != null;
+    }
+
+
+    /**
+     * 判断类是否有指定的Setter方法
+     * @param clazz         指定的类
+     * @param fieldName     字段名
+     * @return              是否有指定的Setter方法
+     */
+    public static boolean hasSetterMethod(Class<?> clazz,String fieldName)
+    {
+        return getSetterMethod(clazz,fieldName) != null;
+    }
+
     /***************************************** Parameter **********************************************************/
+
+    /**
+     * 获取构造器的参数数量
+     * @param constructor   指定构造器
+     * @return              参数数量
+     */
+    public static int getConstructorParameterSize(Constructor<?> constructor)
+    {
+        AssertUtils.exceptionIfObjNull(constructor,"constructor cannot be null.");
+        return constructor.getParameterCount();
+    }
+
+    /**
+     * 获取构造器的所有参数
+     * @param constructor   指定构造器
+     * @return              参数数组
+     */
+    public static Parameter[] getConstructorParameters(Constructor<?> constructor)
+    {
+        AssertUtils.exceptionIfObjNull(constructor,"constructor cannot be null.");
+        return constructor.getParameters();
+    }
+
+    /**
+     * 获取构造器指定位置的参数
+     * @param constructor   指定构造器
+     * @param index         参数下标
+     * @return              参数
+     */
+    public static Parameter getConstructorParameter(Constructor<?> constructor, int index)
+    {
+        AssertUtils.exceptionIfObjNull(constructor,"constructor cannot be null.");
+        AssertUtils.exceptionIfIndexOutOfRange(index,0,constructor.getParameterCount() - 1);
+        return constructor.getParameters()[index];
+    }
+
+    /**
+     * 获取方法参数数量
+     * @param method    指定方法
+     * @return          参数数量
+     */
+    public static int getMethodParameterSize(Method method)
+    {
+        AssertUtils.exceptionIfObjNull(method,"method cannot be null.");
+        return method.getParameterCount();
+    }
+
+
+    /**
+     * 获取指定方法的所有参数名
+     * @param method    指定方法
+     * @return          参数名数组
+     */
+    public static String[] getMethodParameterNames(Method method)
+    {
+        AssertUtils.exceptionIfObjNull(method,"method cannot be null.");
+        //由于java8需要指定jvm -parameters启动参数才能获取到方法参数名，不太灵活，所以此处使用ASM库来获取方法参数名
+        return MethodClassVisitor.getMethodParameterNames(method);
+    }
+
 
     /**
      * 获取指定方法的所有参数
@@ -387,26 +558,37 @@ public class ReflectionUtils
      * @param parameterName     指定的参数名
      * @return                  获取的参数
      */
-    public static Parameter getMethodParameter(Method method,String parameterName)
+    public static Parameter getMethodParameter(Method method,String parameterName,Class<?> parameterType)
     {
         AssertUtils.exceptionIfObjNull(method,"method cannot be null.");
         AssertUtils.exceptionIfStrBlank(parameterName,"parameter name cannot be blank.");
-
+        AssertUtils.exceptionIfObjNull(parameterType,"parameter type cannot be null.");
+        Parameter[] parameters = method.getParameters();
+        String[] parameterNames = MethodClassVisitor.getMethodParameterNames(method);
+        for (int i = 0; i < parameters.length; ++i)
+        {
+            if (parameters[i].getType().equals(parameterType) && parameterName.equals(parameterNames[i]))
+            {
+                return parameters[i];
+            }
+        }
         return null;
     }
 
-
     /**
-     * 获取方法参数数量
-     * @param method    指定方法
-     * @return          参数数量
+     * 获取方法的指定位置的参数
+     * @param method            指定方法
+     * @param index             参数下标
+     * @return                  参数
      */
-    public static int getMethodParameterSize(Method method)
+    public static Parameter getMethodParameter(Method method,int index)
     {
         AssertUtils.exceptionIfObjNull(method,"method cannot be null.");
-        return method.getParameterCount();
+        AssertUtils.exceptionIfIndexOutOfRange(index,0,method.getParameterCount() - 1);
+        return method.getParameters()[index];
     }
-
+    
+    
     /***************************************** Field **********************************************************/
 
     /**
@@ -536,10 +718,349 @@ public class ReflectionUtils
         return null;
     }
 
+    /**
+     * 判断指定类是否拥有指定字段(public ,declare)
+     * @param clazz         指定的类
+     * @param fieldName     字段名
+     * @return              是否拥有指定字段
+     */
+    public static boolean hasField(Class<?> clazz,String fieldName)
+    {
+        return findField(clazz,fieldName) != null;
+    }
 
     /***************************************** Annotation **********************************************************/
 
+    /**
+     * 获取指定类的所有注解
+     * @param clazz     指定的class
+     * @return          注解数组
+     */
+    public static Annotation[] getClassAnnotations(Class<?> clazz)
+    {
+        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
+        return clazz.getAnnotations();
+    }
 
-//    public static A
+    /**
+     * 获取指定类的指定类型的注解
+     * @param clazz             指定的class
+     * @param annotationType    注解类型
+     * @return                  指定的注解
+     */
+    public static <A extends Annotation> A getClassAnnotation(Class<?> clazz , Class<A> annotationType)
+    {
+        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
+        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
+        return clazz.getAnnotation(annotationType);
+    }
 
+    /**
+     * 获取指定类的相同类型的注解
+     * @param clazz             指定的class
+     * @param annotationType    注解类型
+     * @return                  指定的注解
+     */
+    public static <A extends Annotation> A[] getClassSameAnnotations(Class<?> clazz , Class<A> annotationType)
+    {
+        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
+        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
+        return clazz.getAnnotationsByType(annotationType);
+    }
+
+    /**
+     * 获取构造器的所有注解
+     * @param constructor   指定构造器
+     * @return              注解数组
+     */
+    public static Annotation[] getConstructorAnnotations(Constructor<?> constructor)
+    {
+        AssertUtils.exceptionIfObjNull(constructor,"constructor cannot be null.");
+        return constructor.getAnnotations();
+    }
+
+    /**
+     * 获取指定构造器的指定类型的注解
+     * @param constructor        指定构造器
+     * @param annotationType    注解类型
+     * @return                  指定的注解
+     */
+    public static <A extends Annotation> A getConstructorAnnotation(Constructor<?> constructor, Class<A> annotationType)
+    {
+        AssertUtils.exceptionIfObjNull(constructor,"constructor cannot be null.");
+        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
+        return constructor.getAnnotation(annotationType);
+    }
+
+    /**
+     * 获取指定构造器的相同类型的所有注解
+     * @param constructor        指定构造器
+     * @param annotationType    注解类型
+     * @return                  指定的注解
+     */
+    public static <A extends Annotation> A[] getConstructorSameAnnotations(Constructor<?> constructor, Class<A> annotationType)
+    {
+        AssertUtils.exceptionIfObjNull(constructor,"constructor cannot be null.");
+        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
+        return constructor.getAnnotationsByType(annotationType);
+    }
+
+    /**
+     * 获取构造器参数的所有注解
+     * @param constructor   指定构造器
+     * @return              所有参数上的所有注解
+     */
+    public static Annotation[][] getConstructorParametersAnnotations(Constructor<?> constructor)
+    {
+        AssertUtils.exceptionIfObjNull(constructor,"constructor cannot be null.");
+        return constructor.getParameterAnnotations();
+    }
+
+    /**
+     * 获取构造器指定参数的所有注解
+     * @param constructor   指定构造器
+     * @param index         参数下标
+     * @return              参数上的所有注解
+     */
+    public static Annotation[] getConstructorParameterAnnotations(Constructor<?> constructor,int index)
+    {
+        AssertUtils.exceptionIfObjNull(constructor,"constructor cannot be null.");
+        AssertUtils.exceptionIfIndexOutOfRange(index,0,constructor.getParameterCount() - 1);
+        return constructor.getParameterAnnotations()[index];
+    }
+
+
+    /**
+     * 获取指定方法的所有注解
+     * @param method   指定方法
+     * @return         注解数组
+     */
+    public static Annotation[] getMethodAnnotations(Method method)
+    {
+        AssertUtils.exceptionIfObjNull(method,"method cannot be null.");
+        return method.getAnnotations();
+    }
+
+    /**
+     * 获取指定方法的指定类型的注解
+     * @param method   指定方法
+     * @param annotationType   注解类型
+     * @return         指定注解
+     */
+    public static <A extends Annotation> A getMethodAnnotation(Method method,Class<A> annotationType)
+    {
+        AssertUtils.exceptionIfObjNull(method,"method cannot be null.");
+        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
+        return method.getAnnotation(annotationType);
+    }
+
+    /***
+     * 获取指定方法的相同类型的所有注解
+     * @param method 指定方法
+     * @param annotationType 注解类型
+     * @return          相同类型的所有注解
+     */
+    public static <A extends Annotation> A[] getMethodSameAnnotations(Method method,Class<A> annotationType)
+    {
+        AssertUtils.exceptionIfObjNull(method,"method cannot be null.");
+        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
+        return method.getAnnotationsByType(annotationType);
+    }
+
+
+    /**
+     * 获取指定方法参数的所有注解
+     * @param method   指定方法
+     * @return         所有参数的所有注解
+     */
+    public static Annotation[][] getMethodParametersAnnotations(Method method)
+    {
+        AssertUtils.exceptionIfObjNull(method,"method cannot be null.");
+        return method.getParameterAnnotations();
+    }
+
+    /**
+     * 获取指定方法指定参数的所有注解
+     * @param method   指定方法
+     * @param index    参数下标
+     * @return         参数上的所有注解
+     */
+    public static Annotation[] getMethodParameterAnnotations(Method method, int index)
+    {
+        AssertUtils.exceptionIfObjNull(method,"method cannot be null.");
+        AssertUtils.exceptionIfIndexOutOfRange(index,0,method.getParameterCount() - 1);
+        return method.getParameterAnnotations()[index];
+    }
+
+    /***
+     * 获取指定参数的所有注解
+     * @param parameter 指定参数
+     * @return          参数的所有注解
+     */
+    public static Annotation[] getParameterAnnotations(Parameter parameter)
+    {
+        AssertUtils.exceptionIfObjNull(parameter,"parameter cannot be null.");
+        return parameter.getAnnotations();
+    }
+
+    /***
+     * 获取指定参数的指定类型的注解
+     * @param parameter 指定参数
+     * @param annotationType 注解类型
+     * @return          要获取的注解
+     */
+    public static <A extends Annotation> A getParameterAnnotation(Parameter parameter,Class<A> annotationType)
+    {
+        AssertUtils.exceptionIfObjNull(parameter,"parameter cannot be null.");
+        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
+        return parameter.getAnnotation(annotationType);
+    }
+
+    /***
+     * 获取指定参数的相同类型的所有注解
+     * @param parameter 指定参数
+     * @param annotationType 注解类型
+     * @return          相同类型的所有注解
+     */
+    public static <A extends Annotation> A[] getParameterSameAnnotations(Parameter parameter,Class<A> annotationType)
+    {
+        AssertUtils.exceptionIfObjNull(parameter,"parameter cannot be null.");
+        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
+        return parameter.getAnnotationsByType(annotationType);
+    }
+
+    /**
+     * 获取指定字段的所有注解
+     * @param field                 指定字段
+     * @return                      获取的注解
+     */
+    public static Annotation[] getFiledAnnotations(Field field)
+    {
+        AssertUtils.exceptionIfObjNull(field,"field cannot be null.");
+        return field.getAnnotations();
+    }
+
+    /**
+     * 获取指定字段的指定类型的注解
+     * @param field                 指定字段
+     * @param annotationType        注解类型
+     * @return                      获取的注解
+     */
+    public static  <A extends Annotation> A getFieldAnnotation(Field field,Class<A> annotationType)
+    {
+        AssertUtils.exceptionIfObjNull(field,"field cannot be null.");
+        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
+        return field.getAnnotation(annotationType);
+    }
+
+    /***
+     * 获取指定字段的相同类型的所有注解
+     * @param field          指定字段
+     * @param annotationType 注解类型
+     * @return               相同类型的所有注解
+     */
+    public static <A extends Annotation> A[] getFieldSameAnnotations(Field field,Class<A> annotationType)
+    {
+        AssertUtils.exceptionIfObjNull(field,"field cannot be null.");
+        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
+        return field.getAnnotationsByType(annotationType);
+    }
+
+    /**
+     * 判断指定的类是否拥有指定的注解
+     * @param clazz              指定的类
+     * @param annotationType     注解类型
+     * @return                   是否拥有指定的注解
+     */
+    public static <A extends Annotation> boolean hasClassAnnotation(Class<?> clazz, Class<A> annotationType)
+    {
+        return getClassAnnotation(clazz,annotationType) != null;
+    }
+
+    /**
+     * 判断指定的构造器是否拥有指定的注解
+     * @param constructor        指定的构造器
+     * @param annotationType     注解类型
+     * @return                   是否拥有指定的注解
+     */
+    public static <A extends Annotation> boolean hasConstructorAnnotation(Constructor<?> constructor, Class<A> annotationType)
+    {
+        return getConstructorAnnotation(constructor,annotationType) != null;
+    }
+
+    /**
+     * 判断构造器的哪个参数上有指定的注解
+     * @param constructor           构造器
+     * @param annotationType        注解类型
+     * @return                      如果构造器的某个参数拥有指定注解，那么返回其参数的下标，如果没有，返回-1.
+     */
+    public static <A extends Annotation> int hasConstructorParameterAnnotation(Constructor<?> constructor, Class<A> annotationType)
+    {
+        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
+        Parameter[] constructorParameters = getConstructorParameters(constructor);
+        for (int i = 0 ; i < constructorParameters.length; ++i)
+        {
+            if(constructorParameters[i].getAnnotation(annotationType) != null)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 判断指定的方法是否拥有指定的注解
+     * @param method             指定的方法
+     * @param annotationType     注解类型
+     * @return                   是否拥有指定的注解
+     */
+    public static <A extends Annotation> boolean hasMethodAnnotation(Method method, Class<A> annotationType)
+    {
+        return getMethodAnnotation(method,annotationType) != null;
+    }
+
+
+    /**
+     * 判断方法的哪个参数上有指定的注解
+     * @param method           指定方法
+     * @param annotationType   注解类型
+     * @return                 如果方法的某个参数拥有指定注解，那么返回其参数的下标，如果没有，返回-1.
+     */
+    public static <A extends Annotation> int hasMethodParameterAnnotation(Method method, Class<A> annotationType)
+    {
+        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
+        Parameter[] methodParameters = getMethodParameters(method);
+        for (int i = 0 ; i < methodParameters.length; ++i)
+        {
+            if(methodParameters[i].getAnnotation(annotationType) != null)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+
+    /**
+     * 判断指定参数是否有指定注解
+     * @param parameter     指定参数
+     * @param annotationType    注解类型
+     * @return          是否有指定注解
+     */
+    public static <A extends Annotation> boolean hasParameterAnnotation(Parameter parameter, Class<A> annotationType)
+    {
+        return getParameterAnnotation(parameter, annotationType) != null;
+    }
+
+
+    /**
+     * 判断指定字段是否有指定注解
+     * @param field     指定字段
+     * @param annotationType    注解类型
+     * @return          是否有指定注解
+     */
+    public static <A extends Annotation> boolean hasFieldAnnotation(Field field, Class<A> annotationType)
+    {
+        return getFieldAnnotation(field, annotationType) != null;
+    }
 }

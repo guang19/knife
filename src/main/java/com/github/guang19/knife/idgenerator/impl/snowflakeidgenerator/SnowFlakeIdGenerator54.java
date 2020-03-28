@@ -1,8 +1,8 @@
-package com.github.guang19.knife.idgenerator.impl;
+package com.github.guang19.knife.idgenerator.impl.snowflakeidgenerator;
 
 
 import com.github.guang19.knife.idgenerator.IdGenerator;
-import com.github.guang19.knife.idgenerator.impl.AbstractSnowflakeIdGenerator;
+import com.github.guang19.knife.idgenerator.impl.snowflakeidgenerator.AbstractSnowflakeIdGenerator;
 
 /**
  * @author yangguang

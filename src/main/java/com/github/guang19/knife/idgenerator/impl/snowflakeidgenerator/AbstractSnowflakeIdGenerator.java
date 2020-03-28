@@ -1,11 +1,9 @@
-package com.github.guang19.knife.idgenerator.impl;
+package com.github.guang19.knife.idgenerator.impl.snowflakeidgenerator;
 
 import com.github.guang19.knife.idgenerator.IdGenerator;
-import com.github.guang19.knife.timeutils.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Path;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;

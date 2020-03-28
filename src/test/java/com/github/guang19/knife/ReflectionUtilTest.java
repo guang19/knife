@@ -1,11 +1,19 @@
 package com.github.guang19.knife;
 
-import com.github.guang19.knife.reflectionutils.ClassMethodVisitor;
+import com.github.guang19.knife.reflectionutils.MethodClassVisitor;
 import com.github.guang19.knife.reflectionutils.ReflectionUtils;
+import com.github.guang19.knife.testannotation.ClassAnnotation1;
+import com.github.guang19.knife.testannotation.ClassAnnotation2;
+import com.github.guang19.knife.testannotation.ClassAnnotations1;
 import lombok.*;
 import org.junit.Test;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Target;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.Arrays;
 
 /**
@@ -247,9 +255,9 @@ public class ReflectionUtilTest
     public void test04() throws Throwable
     {
         C3 c3 = new C3();
-        System.out.println(ReflectionUtils.getGetter(C3.class, "f3").invoke(c3));
-        ReflectionUtils.getSetter(C3.class,"f3").invoke(c3,"2");
-        System.out.println(ReflectionUtils.getGetter(C3.class, "f3").invoke(c3));
+        System.out.println(ReflectionUtils.getGetterMethod(C3.class, "f3").invoke(c3));
+        ReflectionUtils.getSetterMethod(C3.class,"f3").invoke(c3,"2");
+        System.out.println(ReflectionUtils.getGetterMethod(C3.class, "f3").invoke(c3));
 
 
     }
@@ -270,7 +278,7 @@ public class ReflectionUtilTest
 
         protected static String f6 = "f6";
 
-        public static void get(String a,Object obj)
+        public void get(String s)
         {
         }
 
@@ -280,8 +288,8 @@ public class ReflectionUtilTest
     @Test
     public void test05() throws Throwable
     {
-        final Method m = ReflectionUtils.getMethod(C4.class, "get", String.class, Object.class);
-        System.out.println(Arrays.toString(ClassMethodVisitor.getMethodParameterNames(m)));
+        final Method m = ReflectionUtils.getMethod(C4.class, "get",String.class);
+        System.out.println(Arrays.toString(MethodClassVisitor.getMethodParameterNames(m)));
     }
 
 
@@ -289,8 +297,153 @@ public class ReflectionUtilTest
     @Test
     public void test06() throws Throwable
     {
-        System.out.println(new String[10].length);
+        System.out.println(ReflectionUtils.getMethodParameter(ReflectionUtils.getMethod(C4.class,"get",String.class),"s",String.class));
+    }
 
+    @ClassAnnotation2
+    @ClassAnnotation1
+    @ClassAnnotation1
+    static abstract class Super3
+    {
+
+    }
+
+    @Setter
+    @Getter
+    static class C5 extends Super3
+    {
+
+        @ClassAnnotation2
+        @ClassAnnotation1
+        @ClassAnnotation1
+        public String f1 = "f1";
+
+        @ClassAnnotation1
+        @ClassAnnotation1
+        public C5(){}
+
+        @ClassAnnotation1
+        public C5(@ClassAnnotation2 String s1)
+        {
+
+        }
+
+
+        @ClassAnnotation1
+        public C5(@ClassAnnotation1 @ClassAnnotation2 String s1,@ClassAnnotation1 String s2)
+        {
+
+        }
+
+        @ClassAnnotation2
+        @ClassAnnotation1
+        @ClassAnnotation1
+        public void get()
+        {
+
+        }
+
+        @ClassAnnotation1
+        @ClassAnnotation1
+        public void get2( @ClassAnnotation2 @ClassAnnotation1 @ClassAnnotation1 String s)
+        {
+
+        }
+
+    }
+
+    @Test
+    public void test07() throws Throwable
+    {
+        ClassAnnotation1 classAnnotation1 = ReflectionUtils.getClassAnnotation(C5.class, ClassAnnotation1.class);
+        System.out.println(classAnnotation1);
+        System.out.println(Arrays.toString(ReflectionUtils.getClassAnnotations(C5.class)));
+        System.out.println(Arrays.toString(ReflectionUtils.getClassSameAnnotations(C5.class,ClassAnnotation1.class)));
+    }
+
+
+    @Test
+    public void test08() throws Throwable
+    {
+        System.out.println(Arrays.toString(ReflectionUtils.getConstructorSameAnnotations(ReflectionUtils.getDeclaredConstructor(C5.class),ClassAnnotation1.class)));
+
+        System.out.println(ReflectionUtils.getConstructorAnnotation(ReflectionUtils.getDeclaredConstructor(C5.class,String.class),ClassAnnotation1.class));
+        System.out.println(Arrays.toString(ReflectionUtils.getConstructorAnnotations(ReflectionUtils.getDeclaredConstructor(C5.class,String.class))));
+        Constructor<C5> declaredConstructor = ReflectionUtils.getDeclaredConstructor(C5.class, String.class,String.class);
+        System.out.println(Arrays.toString(ReflectionUtils.getConstructorParameterAnnotations(declaredConstructor,1)));
+    }
+
+    @Test
+    public void test09() throws Throwable
+    {
+        Method method = ReflectionUtils.getMethod(C5.class,"get2",String.class);
+        System.out.println(Arrays.toString(ReflectionUtils.getMethodSameAnnotations(method,ClassAnnotation1.class)));
+        Parameter parameter = ReflectionUtils.getMethodParameter(method,"s",String.class);
+        System.out.println(ReflectionUtils.getParameterAnnotation(parameter, ClassAnnotation2.class));
+        System.out.println(Arrays.toString(ReflectionUtils.getParameterSameAnnotations(parameter, ClassAnnotation1.class)));
+    }
+
+    @Test
+    public void test10() throws Throwable
+    {
+        Field field = ReflectionUtils.getField(C5.class,"f1");
+        System.out.println(Arrays.toString(ReflectionUtils.getFiledAnnotations(field)));
+        System.out.println(ReflectionUtils.getFieldAnnotation(field,ClassAnnotation2.class));
+        System.out.println(Arrays.toString(ReflectionUtils.getFieldSameAnnotations(field,ClassAnnotation1.class)));
+    }
+
+    @Setter
+    @Getter
+    @ClassAnnotation2
+    static class C6
+    {
+
+        @ClassAnnotation2
+        @ClassAnnotation1
+        @ClassAnnotation1
+        public String f1 = "f1";
+
+        @ClassAnnotation1
+        @ClassAnnotation1
+        public C6(){}
+
+        @ClassAnnotation1
+        public C6(@ClassAnnotation2 String s1)
+        {
+
+        }
+
+
+        @ClassAnnotation1
+        public C6(@ClassAnnotation1 @ClassAnnotation2 String s1,@ClassAnnotation1 String s2)
+        {
+
+        }
+
+        @ClassAnnotation2
+        @ClassAnnotation1
+        @ClassAnnotation1
+        public void get()
+        {
+
+        }
+
+        protected void get1(){}
+
+        @ClassAnnotation1
+        @ClassAnnotation1
+        public void get2( @ClassAnnotation2 @ClassAnnotation1 @ClassAnnotation1 String s)
+        {
+
+        }
+    }
+
+
+    @Test
+    public void test11() throws Throwable
+    {
+        System.out.println(ReflectionUtils.hasMethodParameterAnnotation(ReflectionUtils.getMethod(C6.class,"get2",String.class), Test.class));
+        System.out.println(ReflectionUtils.hasClassAnnotation(C6.class,ClassAnnotation2.class));
     }
 
 }
