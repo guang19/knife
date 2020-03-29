@@ -1,0 +1,24 @@
+//        112345678910 23456789101
+//        abcdefghijklmnopqrstuvmxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ
+//        ~ ` ! @ # $ % ^ & * ( ) _ - + = . / ? , 。，| \ { } [ ]
+//        \ / asdasd $ % bbb cc a \^ & * _ - + = ~ ! dddd ( ) _   .  + =
+
+a1b1bc 3abc 男男男男 女
+
+15071193445
+15071193445
+
+010-12345678
+030-1234567
+0503-13246712
+
+2196927727@qq.com
+1446125917@qq.com
+asdasd@163.com
+asd1G3@gmail.com
+asd1G3@outlook.com
+123asd-1dca@outlook.com
+123asd+1dca@outlook.com
+123asd.1dca@outlook.com
+123asd.1dca@outlook.com.cn
+123asd1dca@outlook.com.cn
