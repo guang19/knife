@@ -1,6 +1,4 @@
-package com.github.guang19.knife.mailutils.sender;
-
-import com.github.guang19.knife.mailutils.sender.MailSender;
+package com.github.guang19.knife.mail.sender;
 
 /**
  * @author yangguang

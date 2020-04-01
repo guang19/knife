@@ -5,7 +5,6 @@ import com.github.guang19.knife.reflectionutils.ReflectionUtils;
 import com.github.guang19.knife.testannotation.ClassAnnotation1;
 import com.github.guang19.knife.testannotation.ClassAnnotation2;
 import com.github.guang19.knife.testannotation.ClassAnnotations1;
-import lombok.*;
 import org.junit.Test;
 
 import java.lang.annotation.Annotation;
@@ -57,11 +56,6 @@ public class ReflectionUtilTest
         }
     }
 
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @ToString
     static class C extends Super implements I
     {
         public String f1 = "f1";
@@ -76,6 +70,7 @@ public class ReflectionUtilTest
 
         protected static String f6 = "f6";
 
+        public C(){}
         private C(String f1,String f2 ,String f3 ,String f4){}
         protected C(String f1,String f2 ,String f3 ,String f4,String f5){}
 
@@ -142,11 +137,7 @@ public class ReflectionUtilTest
         ReflectionUtils.getPublicStaticMethod(C.class,"m6",void.class).invoke();
     }
 
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @ToString
+
     static class C2
     {
         public String f1 = "f1";
@@ -229,8 +220,6 @@ public class ReflectionUtilTest
         protected static String s_f6 = "s_f6";
     }
 
-    @Setter
-    @Getter
     static class C3 extends Super2 implements I2
     {
         public String f1 = "f1";
@@ -262,8 +251,7 @@ public class ReflectionUtilTest
 
     }
 
-    @Setter
-    @Getter
+
     static class C4 extends Super2 implements I2
     {
         public String f1 = "f1";
@@ -308,8 +296,7 @@ public class ReflectionUtilTest
 
     }
 
-    @Setter
-    @Getter
+
     static class C5 extends Super3
     {
 
@@ -392,8 +379,7 @@ public class ReflectionUtilTest
         System.out.println(Arrays.toString(ReflectionUtils.getFieldSameAnnotations(field,ClassAnnotation1.class)));
     }
 
-    @Setter
-    @Getter
+
     @ClassAnnotation2
     static class C6
     {
@@ -446,4 +432,12 @@ public class ReflectionUtilTest
         System.out.println(ReflectionUtils.hasClassAnnotation(C6.class,ClassAnnotation2.class));
     }
 
+    @Test
+    public void test12() throws Exception
+    {
+//        System.out.println(Integer.class.getName());
+//        System.out.println(Integer.class.);
+        System.out.println(Integer.class.getSuperclass().equals(Number.class));
+        System.out.println(String.class.getClass().getClass());
+    }
 }

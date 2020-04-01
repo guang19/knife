@@ -20,7 +20,7 @@ public class AssertUtils
     {
         if(index < min || index > max)
         {
-            throw new IndexOutOfBoundsException(String.format("index out of range, min index cannot be lower %d , max index cannot be exceed %d.",min,max));
+            throw new IndexOutOfBoundsException(String.format("Index out of range, min index cannot be lower %d , max index cannot be exceed %d.",min,max));
         }
     }
 
@@ -58,6 +58,27 @@ public class AssertUtils
     {
         return str != null && !str.isEmpty() && !str.trim().isEmpty();
     }
+
+    /**
+     * 判断数组是否为空
+     * @param array     数组
+     * @return          如果数组长度小于等于0，则返回true
+     */
+    public static boolean assertArrayEmpty(Object[] array)
+    {
+        return array.length <= 0;
+    }
+
+    /**
+     * 判断数组是否不为空
+     * @param array     数组
+     * @return          如果数组长度大于0，则返回true
+     */
+    public static boolean assertArrayNotEmpty(Object[] array)
+    {
+        return array.length > 0;
+    }
+
 
     /**
      * 如果集合为null或empty将抛出异常

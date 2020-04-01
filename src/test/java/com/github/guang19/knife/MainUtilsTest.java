@@ -1,9 +1,10 @@
 package com.github.guang19.knife;
 
-import com.github.guang19.knife.mailutils.sender.DefaultMailSenderFactory;
-import com.github.guang19.knife.mailutils.sender.DefaultMailSenderFactoryBuilder;
-import com.github.guang19.knife.mailutils.sender.MailSender;
-import com.github.guang19.knife.mailutils.sender.impl.DefaultMailSender;
+import com.github.guang19.knife.mail.sender.DefaultMailSenderFactory;
+import com.github.guang19.knife.mail.sender.DefaultMailSenderFactoryBuilder;
+import com.github.guang19.knife.mail.sender.MailSender;
+import com.github.guang19.knife.mail.sender.MailSenderFactory;
+import com.github.guang19.knife.mail.sender.impl.DefaultMailSender;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,9 +13,6 @@ import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.mail.*;
 import javax.mail.internet.*;
-import javax.mail.util.ByteArrayDataSource;
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.Properties;
 
 
@@ -34,7 +32,6 @@ public class MainUtilsTest
     @Before
     public void before()
     {
-        properties.setProperty("mail.smtp.user","2196927727@qq.com");
         properties.setProperty("mail.smtp.host","smtp.qq.com");
         properties.setProperty("mail.smtp.port","465");
         properties.setProperty("mail.smtp.auth","true");
@@ -51,7 +48,7 @@ public class MainUtilsTest
             @Override
             protected PasswordAuthentication getPasswordAuthentication()
             {
-                return new PasswordAuthentication("2196927727@qq.com","racvkrqgtpzbeafd");
+                return new PasswordAuthentication("xxxxxxxx","xxxxxxx");
             }
         });
     }
@@ -121,18 +118,18 @@ public class MainUtilsTest
     @Test
     public void test04() throws Exception
     {
-        DefaultMailSenderFactory mailSenderFactory = (DefaultMailSenderFactory) new DefaultMailSenderFactoryBuilder("mail.properties").build();
-        DefaultMailSender mailSender = (DefaultMailSender)mailSenderFactory.getMailSender();
+        MailSenderFactory mailSenderFactory =  new DefaultMailSenderFactoryBuilder("mail.properties").build();
+        MailSender mailSender = mailSenderFactory.getMailSender();
 //        mailSender.sendTextMessage("简单邮件标题","简单邮件","2196927727@qq.com","2196927727@qq.com");
 
-//        mailSender.sendHtmlMessage("简单邮件标题","<h1>简单邮件</h1>","2196927727@qq.com","2196927727@qq.com");
+//        mailSender.sendHtmlMessage("html邮件标题","<h1>html邮件</h1>","2196927727@qq.com","2196927727@qq.com");
 
 //        mailSender.sendTextMessageWithAttachment("简单邮件标题","简单邮件","src/main/java/a.txt","a","2196927727@qq.com","2196927727@qq.com");
 
 //        mailSender.sendTextMessageWithAttachment("简单邮件标题","简单邮件",new FileInputStream("/home/yangguang/下载/tcp-ip-.pdf"),"text/pdf","tcp/ip","2196927727@qq.com","2196927727@qq.com");
 
-//        mailSender.sendHtmlMessageWithAttachment("简单邮件标题","<h2>简单邮件</h2>","src/main/java/a.txt","a","2196927727@qq.com","2196927727@qq.com");
+//        mailSender.sendHtmlMessageWithAttachment("html邮件标题","<h2>html邮件</h2>","src/main/java/a.txt","a","2196927727@qq.com","2196927727@qq.com");
 
-//        mailSender.sendHtmlMessageWithAttachment("简单邮件标题","<h2>简单邮件</h2>",new FileInputStream("/home/yangguang/下载/tcp-ip-.pdf"),"text/pdf","tcp/ip","2196927727@qq.com","2196927727@qq.com");
+//        mailSender.sendHtmlMessageWithAttachment("html邮件标题","<h2>html邮件</h2>",new FileInputStream("/home/yangguang/下载/tcp-ip-.pdf"),"text/pdf","tcp/ip","2196927727@qq.com","2196927727@qq.com");
     }
 }

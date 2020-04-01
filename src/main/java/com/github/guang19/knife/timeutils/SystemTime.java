@@ -29,9 +29,21 @@ public final class SystemTime
         }
     }
 
+
     /**
-     *
      * 使用clock_gettime获取当前系统时间戳
+     *
+     * 获取当前毫秒级的时间戳
+     * 因为currentTimeMillis性能不是特别好
+     * 所以我做了这个使用clock_gettime函数来获取系统时间戳的JNI库
+     *
+     * 但是我经过测试后发现:
+     * 虽然clock_gettime函数确实比gettimeofday函数要快，但是通过
+     * Java层面的JNI调用，反而没有gettimeofday函数快了。
+     * 我想这应该是JVM对JNI的优化，再加之我只是普通的实现了功能，并没有那个能力优化，
+     * 所以还是使用currentTimeMillis较好。
+     *
+     * JNI源码在: resources/jni/time下
      *
      * @return 当前系统时间戳
      */

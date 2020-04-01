@@ -1,6 +1,6 @@
-package com.github.guang19.knife.mailutils;
+package com.github.guang19.knife.mail;
 
-import com.github.guang19.knife.mailutils.exceptions.MailConfigurationException;
+import com.github.guang19.knife.mail.exceptions.MailConfigurationException;
 
 import javax.mail.Message;
 import java.io.InputStream;

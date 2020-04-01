@@ -1,4 +1,4 @@
-package com.github.guang19.knife.mailutils.exceptions;
+package com.github.guang19.knife.mail.exceptions;
 
 /**
  * @author yangguang

@@ -63,7 +63,6 @@
         <developerConnection>https://github.com/guang19/knife.git</developerConnection>
     </scm>
 
-    <!--依赖-->
     <dependencies>
         <!--cglib-->
         <dependency>
@@ -79,20 +78,11 @@
             <version>${java-mail.version}</version>
         </dependency>
 
-
         <!--slf4j-->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
-        </dependency>
-
-        <!--lombok-->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-            <scope>test</scope>
         </dependency>
 
         <!--junit-->
@@ -121,7 +111,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <excludes>
-<!--                    <exclude>*.properties</exclude>-->
+                    <exclude>*.properties</exclude>
                 </excludes>
             </resource>
         </resources>

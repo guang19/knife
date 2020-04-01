@@ -1,5 +1,6 @@
-package com.github.guang19.knife;
+package com.github.guang19.knife.beanutils;
 
+import com.github.guang19.knife.AssertUtils;
 import com.github.guang19.knife.reflectionutils.ReflectionUtils;
 import net.sf.cglib.beans.BeanCopier;
 
@@ -38,119 +39,6 @@ public class BeanUtils
         copyProperties(sourceObj,targetObj,null);
     }
 
-    //函数式接口，简单化BeanCopier的Converter,只对bean的属性值的类型做转换
-    @FunctionalInterface
-    public interface BeanFieldValTypeConverter
-    {
-
-        /**
-         * 请看完以下代码，相信你很快能明白BeanFieldValTypeConverter的作用
-         * e.g.
-         *
-         * ```````````````````````````````````````code
-         *
-         *    public class Inner{}
-         *
-         *    public class Person1
-         *     {
-         *        //wrapper type
-         *         private Long id;
-         *
-         *         private String name;
-         *
-         *         //wrapper type
-         *         private Integer age;
-         *
-         *         private Inner inner;
-         *
-         *         //setter
-         *         ...
-         *     }
-         *
-         *     public class Person2
-         *     {
-         *         //primitive type
-         *         private long id;
-         *
-         *         private String name;
-         *
-         *         //primitive type
-         *         private int age;
-         *
-         *         //type different Inner
-         *         private String inner;
-         *
-         *         //setter
-         *         ...
-         *     }
-         *
-         *  ````
-         *
-         *  Person1 person1 = new Person1(1L,"yxg",19,new Inner);
-         *  Person2 person2 = new Person2();
-         *
-         *  //普通的BeanUtil  normal
-         *  BeanUtil.copy(person1,person2);
-         *
-         *  ````
-         *
-         * result:
-         *
-         *    person2{id:0L,name:"yxg",age:0,inner:null};
-         *
-         * ```````````````````````````````````````
-         *
-         *  以上这段代码在普通的BeanUtil中，只有name属性能够被正确的拷贝，
-         *  其他属性因为类型不同，不会被拷贝成功。
-         *
-         *  而此接口就是为了解决这个问题而生的，你可以定义你想要转换的属性的值。
-         *
-         *  它的lambda写法如下:
-         *
-         *   BeanFieldValTypeConverter converter = field ->
-         *   {
-         *       //如果当前拷贝的属性值是 age 属性
-         *       if(field instanceof Integer)
-         *       {
-         *           return (Integer)field;
-         *       }
-         *
-         *       //如果当前拷贝的属性值是 id 属性
-         *       if(fieldVal instanceof Long)
-         *       {
-         *           return (Long) fieldVal;
-         *       }
-         *
-         *       //如果当前拷贝的属性值是 Inner 属性
-         *       if(fieldVal instanceof Inner)
-         *       {
-         *           return fieldVal.toString();
-         *       }
-         *       return field;
-         *   }
-         *
-         *   BeanUtil.copyProperties(person1,person2,converter);
-         *
-         * result(copy success):
-         *
-         *    person2{id:1L,name:"yxg",age:19, inner::toString()};
-         *
-         *
-         *  其实这个接口是为了简化BeanCopier接口而生的。
-         *
-         *  FieldVal: BeanCopier在设置属性时会调用此接口，
-         *            FieldVal就是当前正要设置的属性值。
-         *
-         */
-
-        /**
-         * 转换bean的属性值
-         * @param   fieldVal    属性值
-         * @return              转换后的属性值
-         */
-        public abstract Object convertFieldValType(Object fieldVal);
-    }
-
     /**
      * 使用指定转换器定义的规则拷贝bean
      * @param sourceObj                     源对象
@@ -161,8 +49,8 @@ public class BeanUtils
      */
     public static <S,T> void copyProperties(S sourceObj,T targetObj,BeanFieldValTypeConverter beanFieldValTypeConverter)
     {
-        AssertUtils.exceptionIfObjNull(sourceObj,"source object cannot be null.");
-        AssertUtils.exceptionIfObjNull(targetObj,"target object cannot be null.");
+        AssertUtils.exceptionIfObjNull(sourceObj,"Source object cannot be null.");
+        AssertUtils.exceptionIfObjNull(targetObj,"Target object cannot be null.");
         copy(sourceObj,targetObj,beanFieldValTypeConverter);
     }
 
@@ -177,9 +65,9 @@ public class BeanUtils
      * @param <T>                   Target Class
      * @return                      目标类型元素的集合
      */
-    public static <S,T> List<T> copyCollection(List<S> sourceCollection, Class<T> targetCollectionElementType)
+    public static <S,T> List<T> createTargetCollection(List<S> sourceCollection, Class<T> targetCollectionElementType)
     {
-        return copyCollection(sourceCollection,targetCollectionElementType,null);
+        return createTargetCollection(sourceCollection,targetCollectionElementType,null);
     }
 
     /**
@@ -194,10 +82,10 @@ public class BeanUtils
      * @param <T>                   Target Class
      * @return                      目标类型元素的集合
      */
-    public static <S,T> List<T> copyCollection(List<S> sourceCollection, Class<T> targetCollectionElementType,BeanFieldValTypeConverter beanFieldValTypeConverter)
+    public static <S,T> List<T> createTargetCollection(List<S> sourceCollection, Class<T> targetCollectionElementType,BeanFieldValTypeConverter beanFieldValTypeConverter)
     {
-        AssertUtils.exceptionIfObjNull(sourceCollection,"source collection cannot be null.");
-        AssertUtils.exceptionIfObjNull(targetCollectionElementType,"target collection element type cannot be null.");
+        AssertUtils.exceptionIfObjNull(sourceCollection,"Source collection cannot be null.");
+        AssertUtils.exceptionIfObjNull(targetCollectionElementType,"Target collection element type cannot be null.");
         return sourceCollection.
                 stream().
                 map(element ->
@@ -231,9 +119,9 @@ public class BeanUtils
      * @param <T>                   Target Class
      * @return                      目标类型元素的集合
      */
-    public static <S,T> Set<T> copyCollection(Set<S> sourceCollection, Class<T> targetCollectionElementType)
+    public static <S,T> Set<T> createTargetCollection(Set<S> sourceCollection, Class<T> targetCollectionElementType)
     {
-        return copyCollection(sourceCollection,targetCollectionElementType,null);
+        return createTargetCollection(sourceCollection,targetCollectionElementType,null);
     }
 
 
@@ -249,10 +137,10 @@ public class BeanUtils
      * @param <T>                   Target Class
      * @return                      目标类型元素的集合
      */
-    public static <S,T> Set<T> copyCollection(Set<S> sourceCollection, Class<T> targetCollectionElementType,BeanFieldValTypeConverter beanFieldValTypeConverter)
+    public static <S,T> Set<T> createTargetCollection(Set<S> sourceCollection, Class<T> targetCollectionElementType,BeanFieldValTypeConverter beanFieldValTypeConverter)
     {
-        AssertUtils.exceptionIfObjNull(sourceCollection,"source collection cannot be null.");
-        AssertUtils.exceptionIfObjNull(targetCollectionElementType,"target collection element type cannot be null.");
+        AssertUtils.exceptionIfObjNull(sourceCollection,"Source collection cannot be null.");
+        AssertUtils.exceptionIfObjNull(targetCollectionElementType,"Target collection element type cannot be null.");
         return sourceCollection.
                 stream().
                 map(element ->
@@ -305,8 +193,8 @@ public class BeanUtils
      */
     public static <S,T> T createTargetObj(S sourceObj,Class<T> targetClass,BeanFieldValTypeConverter beanFieldValTypeConverter)
     {
-        AssertUtils.exceptionIfObjNull(sourceObj,"source object cannot be null.");
-        AssertUtils.exceptionIfObjNull(targetClass,"target class cannot be null.");
+        AssertUtils.exceptionIfObjNull(sourceObj,"Source object cannot be null.");
+        AssertUtils.exceptionIfObjNull(targetClass,"Target class cannot be null.");
         try
         {
             return create(sourceObj,targetClass,beanFieldValTypeConverter);

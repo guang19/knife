@@ -1,7 +1,7 @@
-package com.github.guang19.knife.mailutils.sender;
+package com.github.guang19.knife.mail.sender;
 
-import com.github.guang19.knife.mailutils.MailConfiguration;
-import com.github.guang19.knife.mailutils.sender.impl.DefaultMailSender;
+import com.github.guang19.knife.mail.MailConfiguration;
+import com.github.guang19.knife.mail.sender.impl.DefaultMailSender;
 
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;

@@ -1,6 +1,6 @@
-package com.github.guang19.knife.mailutils.sender.impl;
+package com.github.guang19.knife.mail.sender.impl;
 
-import com.github.guang19.knife.mailutils.sender.AbstractMailSender;
+import com.github.guang19.knife.mail.sender.AbstractMailSender;
 
 import javax.mail.Message;
 import javax.mail.Session;

@@ -1,6 +1,5 @@
-package com.github.guang19.knife.mailutils.sender;
+package com.github.guang19.knife.mail.sender;
 
-import javax.mail.Message;
 import java.io.InputStream;
 
 /**

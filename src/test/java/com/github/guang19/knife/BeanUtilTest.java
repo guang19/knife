@@ -1,9 +1,6 @@
 package com.github.guang19.knife;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import com.github.guang19.knife.beanutils.BeanUtils;
 import net.sf.cglib.beans.BeanCopier;
 import org.junit.Test;
 
@@ -22,10 +19,6 @@ public class BeanUtilTest
 
     }
 
-    @Setter
-    @Getter
-    @ToString
-    @NoArgsConstructor
     public static class Person1
     {
         private Long id;
@@ -36,12 +29,48 @@ public class BeanUtilTest
 
         private Inner inner;
 
+        public Long getId()
+        {
+            return id;
+        }
+
+        public void setId(Long id)
+        {
+            this.id = id;
+        }
+
+        public String getName()
+        {
+            return name;
+        }
+
+        public void setName(String name)
+        {
+            this.name = name;
+        }
+
+        public Integer getAge()
+        {
+            return age;
+        }
+
+        public void setAge(Integer age)
+        {
+            this.age = age;
+        }
+
+        public Inner getInner()
+        {
+            return inner;
+        }
+
+        public void setInner(Inner inner)
+        {
+            this.inner = inner;
+        }
     }
 
-    @Setter
-    @Getter
-    @ToString
-    @NoArgsConstructor
+
     public static class Person2
     {
         private Long id;
@@ -51,6 +80,46 @@ public class BeanUtilTest
         private Integer age;
 
         private Inner inner;
+
+        public Long getId()
+        {
+            return id;
+        }
+
+        public void setId(Long id)
+        {
+            this.id = id;
+        }
+
+        public String getName()
+        {
+            return name;
+        }
+
+        public void setName(String name)
+        {
+            this.name = name;
+        }
+
+        public Integer getAge()
+        {
+            return age;
+        }
+
+        public void setAge(Integer age)
+        {
+            this.age = age;
+        }
+
+        public Inner getInner()
+        {
+            return inner;
+        }
+
+        public void setInner(Inner inner)
+        {
+            this.inner = inner;
+        }
     }
 
 
@@ -85,10 +154,7 @@ public class BeanUtilTest
         System.out.println(BeanUtils.createTargetObj(person1,Person2.class));
     }
 
-    @Setter
-    @Getter
-    @ToString
-    @NoArgsConstructor
+
     public static class Person3
     {
         private long id;
@@ -99,6 +165,45 @@ public class BeanUtilTest
 
         private String inner;
 
+        public long getId()
+        {
+            return id;
+        }
+
+        public void setId(long id)
+        {
+            this.id = id;
+        }
+
+        public String getName()
+        {
+            return name;
+        }
+
+        public void setName(String name)
+        {
+            this.name = name;
+        }
+
+        public int getAge()
+        {
+            return age;
+        }
+
+        public void setAge(int age)
+        {
+            this.age = age;
+        }
+
+        public String getInner()
+        {
+            return inner;
+        }
+
+        public void setInner(String inner)
+        {
+            this.inner = inner;
+        }
     }
 
     @Test
@@ -219,14 +324,14 @@ public class BeanUtilTest
         person1List.add(person1);
         person1List.add(person2);
 
-        List<Person2> person2List = BeanUtils.copyCollection(person1List, Person2.class);
+        List<Person2> person2List = BeanUtils.createTargetCollection(person1List, Person2.class);
         System.out.println(person2List);
 
         Set<Person1> person1Set = new HashSet<>();
         person1Set.add(person1);
         person1Set.add(person2);
 
-        Set<Person2> person2Set = BeanUtils.copyCollection(person1Set,Person2.class);
+        Set<Person2> person2Set = BeanUtils.createTargetCollection(person1Set,Person2.class);
 
         System.out.println(person2Set);
     }
@@ -249,7 +354,7 @@ public class BeanUtilTest
         List<Person1> person1List = new ArrayList<>(Arrays.asList(person1,person2));
         System.out.println("person1List : " + person1List);
 
-        List<Person3> person3List = BeanUtils.copyCollection(person1List,Person3.class,(fieldVal ->
+        List<Person3> person3List = BeanUtils.createTargetCollection(person1List,Person3.class,(fieldVal ->
         {
             if(fieldVal instanceof Integer)
             {
@@ -270,7 +375,7 @@ public class BeanUtilTest
         Set<Person1> person1Set = new HashSet<>(Arrays.asList(person1,person2));
         System.out.println("person1Set : " + person1Set);
 
-        Set<Person3> person3Set = BeanUtils.copyCollection(person1Set,Person3.class,(fieldVal ->
+        Set<Person3> person3Set = BeanUtils.createTargetCollection(person1Set,Person3.class,(fieldVal ->
         {
             if(fieldVal instanceof Integer)
             {

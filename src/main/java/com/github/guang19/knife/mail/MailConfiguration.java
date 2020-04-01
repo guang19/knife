@@ -1,4 +1,4 @@
-package com.github.guang19.knife.mailutils;
+package com.github.guang19.knife.mail;
 
 import java.util.Properties;
 

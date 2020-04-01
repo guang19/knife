@@ -1,9 +1,9 @@
-package com.github.guang19.knife.mailutils.sender;
+package com.github.guang19.knife.mail.sender;
 
-import com.github.guang19.knife.mailutils.DefaultMailConfigurationParser;
-import com.github.guang19.knife.mailutils.MailConfiguration;
-import com.github.guang19.knife.mailutils.MailConfigurationParser;
-import com.github.guang19.knife.mailutils.exceptions.MailConfigurationException;
+import com.github.guang19.knife.mail.DefaultMailConfigurationParser;
+import com.github.guang19.knife.mail.MailConfiguration;
+import com.github.guang19.knife.mail.MailConfigurationParser;
+import com.github.guang19.knife.mail.exceptions.MailConfigurationException;
 
 /**
  * @author yangguang

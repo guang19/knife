@@ -1,4 +1,4 @@
-package com.github.guang19.knife.mailutils.sender;
+package com.github.guang19.knife.mail.sender;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;

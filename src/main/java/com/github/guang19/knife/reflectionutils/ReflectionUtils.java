@@ -1,6 +1,5 @@
 package com.github.guang19.knife.reflectionutils;
 
-import com.github.guang19.knife.AssertUtils;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -84,8 +83,6 @@ public class ReflectionUtils
      */
     private static MethodHandle lookupConstructor(Class<?> clazz,Class<?> ...parameterTypes)
     {
-        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
-        AssertUtils.exceptionIfObjNull(parameterTypes,"parameter type can be omitted , but cannot be null.");
         try
         {
             return methodFinder.findConstructor(clazz,MethodType.methodType(void.class,parameterTypes));
@@ -105,8 +102,6 @@ public class ReflectionUtils
      */
     public static <T> Constructor<T> getDeclaredConstructor(Class<T> clazz,Class<?> ...parameterTypes)
     {
-        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
-        AssertUtils.exceptionIfObjNull(parameterTypes,"parameter type can be omitted , but cannot be null.");
         try
         {
             return clazz.getDeclaredConstructor(parameterTypes);
@@ -125,7 +120,6 @@ public class ReflectionUtils
      */
     public static Constructor<?>[] getDeclaredConstructors(Class<?> clazz)
     {
-        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
         return clazz.getDeclaredConstructors();
     }
 
@@ -137,8 +131,6 @@ public class ReflectionUtils
      */
     public static boolean hasPublicConstructor(Class<?> clazz,Class<?> ...parameterTypes)
     {
-        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
-        AssertUtils.exceptionIfObjNull(parameterTypes,"parameter type cannot be null.");
         try
         {
             return clazz.getConstructor(parameterTypes) != null;
@@ -158,8 +150,6 @@ public class ReflectionUtils
      */
     public static boolean hasDeclaredConstructor(Class<?> clazz,Class<?> parameterTypes)
     {
-        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
-        AssertUtils.exceptionIfObjNull(parameterTypes,"parameter type cannot be null.");
         try
         {
             return clazz.getDeclaredConstructor(parameterTypes) != null;
@@ -216,10 +206,6 @@ public class ReflectionUtils
      */
     private static MethodHandle lookupPublicMethod(Class<?> clazz, String methodName,boolean isStatic,Class<?> returnType,Class<?> ...parameterTypes)
     {
-        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
-        AssertUtils.exceptionIfStrBlank(methodName,"method name cannot be blank.");
-        AssertUtils.exceptionIfObjNull(returnType,"return type cannot be null.");
-        AssertUtils.exceptionIfObjNull(parameterTypes,"parameter type can be omitted , but cannot be null.");
         try
         {
             return isStatic ? methodFinder.findStatic(clazz, methodName, MethodType.methodType(returnType, parameterTypes)) :
@@ -239,7 +225,6 @@ public class ReflectionUtils
      */
     public static Method[] getPublicMethods(Class<?> clazz)
     {
-        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
         return clazz.getMethods();
     }
 
@@ -250,7 +235,6 @@ public class ReflectionUtils
      */
     public static Method[] getDeclaredMethods(Class<?> clazz)
     {
-        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
         return clazz.getDeclaredMethods();
     }
 
@@ -266,9 +250,6 @@ public class ReflectionUtils
      */
     public static Method getMethod(Class<?> clazz,String methodName,Class<?> ...parameterTypes)
     {
-        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
-        AssertUtils.exceptionIfStrBlank(methodName,"method name cannot be blank.");
-        AssertUtils.exceptionIfObjNull(parameterTypes,"parameter type can be omitted , but cannot be null.");
         return findMethod(clazz,methodName,parameterTypes);
     }
 
@@ -289,9 +270,6 @@ public class ReflectionUtils
      */
     public static Method getMethodBySuperClass(Class<?> clazz,String methodName,Class<?> ...parameterTypes)
     {
-        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
-        AssertUtils.exceptionIfStrBlank(methodName,"method name cannot be blank.");
-        AssertUtils.exceptionIfObjNull(parameterTypes,"parameter type can be omitted , but cannot be null.");
         Method method = null;
         //尝试获取本类方法
         if((method = findMethod(clazz,methodName,parameterTypes)) == null)
@@ -376,8 +354,6 @@ public class ReflectionUtils
      */
     public static Method getGetterMethod(Class<?> clazz,String fieldName)
     {
-        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
-        AssertUtils.exceptionIfStrBlank(fieldName,"field name cannot be blank.");
         try
         {
             return new PropertyDescriptor(fieldName,clazz).getReadMethod();
@@ -396,8 +372,6 @@ public class ReflectionUtils
      */
     public static Method getSetterMethod(Class<?> clazz,String fieldName)
     {
-        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
-        AssertUtils.exceptionIfStrBlank(fieldName,"field name cannot be blank.");
         try
         {
             return new PropertyDescriptor(fieldName,clazz).getWriteMethod();
@@ -417,9 +391,6 @@ public class ReflectionUtils
      */
     public static boolean hasPublicMethod(Class<?> clazz,String methodName,Class<?> ...parameterTypes)
     {
-        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
-        AssertUtils.exceptionIfStrBlank(methodName,"method name cannot be blank.");
-        AssertUtils.exceptionIfObjNull(parameterTypes,"parameter type cannot be null.");
         try
         {
             return clazz.getMethod(methodName, parameterTypes) != null;
@@ -440,9 +411,6 @@ public class ReflectionUtils
      */
     public static boolean hasDeclaredMethod(Class<?> clazz,String methodName,Class<?> ...parameterTypes)
     {
-        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
-        AssertUtils.exceptionIfStrBlank(methodName,"method name cannot be blank.");
-        AssertUtils.exceptionIfObjNull(parameterTypes,"parameter type cannot be null.");
         try
         {
             return clazz.getDeclaredMethod(methodName, parameterTypes) != null;
@@ -487,7 +455,6 @@ public class ReflectionUtils
      */
     public static int getConstructorParameterSize(Constructor<?> constructor)
     {
-        AssertUtils.exceptionIfObjNull(constructor,"constructor cannot be null.");
         return constructor.getParameterCount();
     }
 
@@ -498,7 +465,6 @@ public class ReflectionUtils
      */
     public static Parameter[] getConstructorParameters(Constructor<?> constructor)
     {
-        AssertUtils.exceptionIfObjNull(constructor,"constructor cannot be null.");
         return constructor.getParameters();
     }
 
@@ -510,8 +476,6 @@ public class ReflectionUtils
      */
     public static Parameter getConstructorParameter(Constructor<?> constructor, int index)
     {
-        AssertUtils.exceptionIfObjNull(constructor,"constructor cannot be null.");
-        AssertUtils.exceptionIfIndexOutOfRange(index,0,constructor.getParameterCount() - 1);
         return constructor.getParameters()[index];
     }
 
@@ -522,7 +486,6 @@ public class ReflectionUtils
      */
     public static int getMethodParameterSize(Method method)
     {
-        AssertUtils.exceptionIfObjNull(method,"method cannot be null.");
         return method.getParameterCount();
     }
 
@@ -534,7 +497,6 @@ public class ReflectionUtils
      */
     public static String[] getMethodParameterNames(Method method)
     {
-        AssertUtils.exceptionIfObjNull(method,"method cannot be null.");
         //由于java8需要指定jvm -parameters启动参数才能获取到方法参数名，不太灵活，所以此处使用ASM库来获取方法参数名
         return MethodClassVisitor.getMethodParameterNames(method);
     }
@@ -547,7 +509,6 @@ public class ReflectionUtils
      */
     public static Parameter[] getMethodParameters(Method method)
     {
-        AssertUtils.exceptionIfObjNull(method,"method cannot be null.");
         return method.getParameters();
     }
 
@@ -560,9 +521,6 @@ public class ReflectionUtils
      */
     public static Parameter getMethodParameter(Method method,String parameterName,Class<?> parameterType)
     {
-        AssertUtils.exceptionIfObjNull(method,"method cannot be null.");
-        AssertUtils.exceptionIfStrBlank(parameterName,"parameter name cannot be blank.");
-        AssertUtils.exceptionIfObjNull(parameterType,"parameter type cannot be null.");
         Parameter[] parameters = method.getParameters();
         String[] parameterNames = MethodClassVisitor.getMethodParameterNames(method);
         for (int i = 0; i < parameters.length; ++i)
@@ -583,8 +541,6 @@ public class ReflectionUtils
      */
     public static Parameter getMethodParameter(Method method,int index)
     {
-        AssertUtils.exceptionIfObjNull(method,"method cannot be null.");
-        AssertUtils.exceptionIfIndexOutOfRange(index,0,method.getParameterCount() - 1);
         return method.getParameters()[index];
     }
     
@@ -598,7 +554,6 @@ public class ReflectionUtils
      */
     public static Field[] getFields(Class<?> clazz)
     {
-        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
         return clazz.getFields();
     }
 
@@ -609,7 +564,6 @@ public class ReflectionUtils
      */
     public static Field[] getDeclareFields(Class<?> clazz)
     {
-        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
         return clazz.getDeclaredFields();
     }
 
@@ -625,8 +579,6 @@ public class ReflectionUtils
      */
     public static Field getField(Class<?> clazz,String fieldName)
     {
-        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
-        AssertUtils.exceptionIfStrBlank(fieldName,"field name cannot be blank.");
         return findField(clazz,fieldName);
     }
 
@@ -643,8 +595,6 @@ public class ReflectionUtils
      */
     public static Field getFieldByFindSuperClass(Class<?> clazz , String fieldName)
     {
-        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
-        AssertUtils.exceptionIfStrBlank(fieldName,"field name cannot be blank.");
         Field field = null;
         //尝试获取本类字段
         if((field = findField(clazz,fieldName)) == null)
@@ -738,7 +688,6 @@ public class ReflectionUtils
      */
     public static Annotation[] getClassAnnotations(Class<?> clazz)
     {
-        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
         return clazz.getAnnotations();
     }
 
@@ -750,8 +699,6 @@ public class ReflectionUtils
      */
     public static <A extends Annotation> A getClassAnnotation(Class<?> clazz , Class<A> annotationType)
     {
-        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
-        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
         return clazz.getAnnotation(annotationType);
     }
 
@@ -763,8 +710,6 @@ public class ReflectionUtils
      */
     public static <A extends Annotation> A[] getClassSameAnnotations(Class<?> clazz , Class<A> annotationType)
     {
-        AssertUtils.exceptionIfObjNull(clazz,"class cannot be null.");
-        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
         return clazz.getAnnotationsByType(annotationType);
     }
 
@@ -775,7 +720,6 @@ public class ReflectionUtils
      */
     public static Annotation[] getConstructorAnnotations(Constructor<?> constructor)
     {
-        AssertUtils.exceptionIfObjNull(constructor,"constructor cannot be null.");
         return constructor.getAnnotations();
     }
 
@@ -787,8 +731,6 @@ public class ReflectionUtils
      */
     public static <A extends Annotation> A getConstructorAnnotation(Constructor<?> constructor, Class<A> annotationType)
     {
-        AssertUtils.exceptionIfObjNull(constructor,"constructor cannot be null.");
-        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
         return constructor.getAnnotation(annotationType);
     }
 
@@ -800,8 +742,6 @@ public class ReflectionUtils
      */
     public static <A extends Annotation> A[] getConstructorSameAnnotations(Constructor<?> constructor, Class<A> annotationType)
     {
-        AssertUtils.exceptionIfObjNull(constructor,"constructor cannot be null.");
-        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
         return constructor.getAnnotationsByType(annotationType);
     }
 
@@ -812,7 +752,6 @@ public class ReflectionUtils
      */
     public static Annotation[][] getConstructorParametersAnnotations(Constructor<?> constructor)
     {
-        AssertUtils.exceptionIfObjNull(constructor,"constructor cannot be null.");
         return constructor.getParameterAnnotations();
     }
 
@@ -824,8 +763,6 @@ public class ReflectionUtils
      */
     public static Annotation[] getConstructorParameterAnnotations(Constructor<?> constructor,int index)
     {
-        AssertUtils.exceptionIfObjNull(constructor,"constructor cannot be null.");
-        AssertUtils.exceptionIfIndexOutOfRange(index,0,constructor.getParameterCount() - 1);
         return constructor.getParameterAnnotations()[index];
     }
 
@@ -837,7 +774,6 @@ public class ReflectionUtils
      */
     public static Annotation[] getMethodAnnotations(Method method)
     {
-        AssertUtils.exceptionIfObjNull(method,"method cannot be null.");
         return method.getAnnotations();
     }
 
@@ -849,8 +785,6 @@ public class ReflectionUtils
      */
     public static <A extends Annotation> A getMethodAnnotation(Method method,Class<A> annotationType)
     {
-        AssertUtils.exceptionIfObjNull(method,"method cannot be null.");
-        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
         return method.getAnnotation(annotationType);
     }
 
@@ -862,8 +796,6 @@ public class ReflectionUtils
      */
     public static <A extends Annotation> A[] getMethodSameAnnotations(Method method,Class<A> annotationType)
     {
-        AssertUtils.exceptionIfObjNull(method,"method cannot be null.");
-        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
         return method.getAnnotationsByType(annotationType);
     }
 
@@ -875,7 +807,6 @@ public class ReflectionUtils
      */
     public static Annotation[][] getMethodParametersAnnotations(Method method)
     {
-        AssertUtils.exceptionIfObjNull(method,"method cannot be null.");
         return method.getParameterAnnotations();
     }
 
@@ -887,8 +818,6 @@ public class ReflectionUtils
      */
     public static Annotation[] getMethodParameterAnnotations(Method method, int index)
     {
-        AssertUtils.exceptionIfObjNull(method,"method cannot be null.");
-        AssertUtils.exceptionIfIndexOutOfRange(index,0,method.getParameterCount() - 1);
         return method.getParameterAnnotations()[index];
     }
 
@@ -899,7 +828,6 @@ public class ReflectionUtils
      */
     public static Annotation[] getParameterAnnotations(Parameter parameter)
     {
-        AssertUtils.exceptionIfObjNull(parameter,"parameter cannot be null.");
         return parameter.getAnnotations();
     }
 
@@ -911,8 +839,6 @@ public class ReflectionUtils
      */
     public static <A extends Annotation> A getParameterAnnotation(Parameter parameter,Class<A> annotationType)
     {
-        AssertUtils.exceptionIfObjNull(parameter,"parameter cannot be null.");
-        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
         return parameter.getAnnotation(annotationType);
     }
 
@@ -924,8 +850,6 @@ public class ReflectionUtils
      */
     public static <A extends Annotation> A[] getParameterSameAnnotations(Parameter parameter,Class<A> annotationType)
     {
-        AssertUtils.exceptionIfObjNull(parameter,"parameter cannot be null.");
-        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
         return parameter.getAnnotationsByType(annotationType);
     }
 
@@ -936,7 +860,6 @@ public class ReflectionUtils
      */
     public static Annotation[] getFiledAnnotations(Field field)
     {
-        AssertUtils.exceptionIfObjNull(field,"field cannot be null.");
         return field.getAnnotations();
     }
 
@@ -948,8 +871,6 @@ public class ReflectionUtils
      */
     public static  <A extends Annotation> A getFieldAnnotation(Field field,Class<A> annotationType)
     {
-        AssertUtils.exceptionIfObjNull(field,"field cannot be null.");
-        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
         return field.getAnnotation(annotationType);
     }
 
@@ -961,8 +882,6 @@ public class ReflectionUtils
      */
     public static <A extends Annotation> A[] getFieldSameAnnotations(Field field,Class<A> annotationType)
     {
-        AssertUtils.exceptionIfObjNull(field,"field cannot be null.");
-        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
         return field.getAnnotationsByType(annotationType);
     }
 
@@ -996,7 +915,6 @@ public class ReflectionUtils
      */
     public static <A extends Annotation> int hasConstructorParameterAnnotation(Constructor<?> constructor, Class<A> annotationType)
     {
-        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
         Parameter[] constructorParameters = getConstructorParameters(constructor);
         for (int i = 0 ; i < constructorParameters.length; ++i)
         {
@@ -1028,7 +946,6 @@ public class ReflectionUtils
      */
     public static <A extends Annotation> int hasMethodParameterAnnotation(Method method, Class<A> annotationType)
     {
-        AssertUtils.exceptionIfObjNull(annotationType,"annotation type cannot be null.");
         Parameter[] methodParameters = getMethodParameters(method);
         for (int i = 0 ; i < methodParameters.length; ++i)
         {
@@ -1063,4 +980,29 @@ public class ReflectionUtils
     {
         return getFieldAnnotation(field, annotationType) != null;
     }
+
+    /************************************************************************************************************************/
+
+    /**
+     * 判断类型是否为原生类型
+     * @param clazz 要判断的类型
+     * @return      是否为原生类型
+     */
+    public static boolean isPrimitive(Class<?> clazz)
+    {
+        return clazz.isPrimitive();
+    }
+
+    /**
+     * 判断类型是否为包装类型
+     * @param clazz 要判断的类型
+     * @return      是否为包装类型
+     */
+    public static boolean isWrapper(Class<?> clazz)
+    {
+        return clazz.equals(Integer.class) || clazz.equals(Long.class) || clazz.equals(Short.class)
+                || clazz.equals(Double.class) || clazz.equals(Float.class) || clazz.equals(Character.class)
+                || clazz.equals(Byte.class) || clazz.equals(Boolean.class);
+    }
+
 }

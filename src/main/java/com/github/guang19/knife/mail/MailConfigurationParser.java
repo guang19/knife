@@ -1,6 +1,4 @@
-package com.github.guang19.knife.mailutils;
-
-import java.io.IOException;
+package com.github.guang19.knife.mail;
 
 /**
  * @author yangguang
