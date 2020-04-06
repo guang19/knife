@@ -19,7 +19,7 @@ maven:
 ````text
  <groupId>com.github.guang19</groupId>
  <artifactId>knife</artifactId>
- <version>1.0.2</version>
+ <version>1.0.3</version>
 ````
 
 ### BeanUtils
