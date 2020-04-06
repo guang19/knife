@@ -26,14 +26,18 @@ public abstract class AbstractSnowflakeIdGenerator implements IdGenerator
     //开始时间戳.
     protected final long START_EPOCH;
 
+    /**
+     * 开始时间构造
+     * @param startTime    开始时间
+     */
+    protected AbstractSnowflakeIdGenerator(LocalDateTime startTime)
     {
-        LocalDateTime now = LocalDateTime.now(Clock.systemDefaultZone());
         if(LOGGER.isDebugEnabled())
         {
-            LOGGER.debug("The snowflake id generator starting time is {}",now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            LOGGER.debug("The snowflake id generator starting time is {}",startTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         }
         //从当前时间戳算起，这样尽可能最大化 ID 使用时间 (32位时间戳可以使用4年，40位时间戳可以使用(34年))
-        START_EPOCH = now.toInstant(ZoneOffset.of("+8")).toEpochMilli();
+        START_EPOCH = startTime.toInstant(ZoneOffset.of("+8")).toEpochMilli();
         try
         {
             //sleep for a short period of time , because [START_EPOCH] start at current time

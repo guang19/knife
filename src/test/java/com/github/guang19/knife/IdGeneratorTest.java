@@ -5,6 +5,7 @@ import com.github.guang19.knife.idgenerator.impl.snowflakeidgenerator.SnowFlakeI
 import com.github.guang19.knife.idgenerator.impl.snowflakeidgenerator.SnowFlakeIdGenerator64;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -116,7 +117,10 @@ public class IdGeneratorTest
     @Test
     public void test06() throws Exception
     {
-        Process clock_gettime = Runtime.getRuntime().exec("clock_gettime");
-        System.out.println(clock_gettime.exitValue());
+        //编写 test06 的时间是: 2020/04/06
+        //那么只要将时间定为: 2016/04/06 就差不多可以测出54次方的时间戳的范围
+       IdGenerator idGenerator = new SnowFlakeIdGenerator54(0,8, LocalDateTime.of(2016,4,6,0,0));
+       System.out.println(idGenerator.generateId());
+        System.out.println((1L << 53) - 1);
     }
 }

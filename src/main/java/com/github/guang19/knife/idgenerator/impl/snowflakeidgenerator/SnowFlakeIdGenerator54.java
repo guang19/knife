@@ -4,6 +4,9 @@ package com.github.guang19.knife.idgenerator.impl.snowflakeidgenerator;
 import com.github.guang19.knife.idgenerator.IdGenerator;
 import com.github.guang19.knife.idgenerator.impl.snowflakeidgenerator.AbstractSnowflakeIdGenerator;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
+
 /**
  * @author yangguang
  * @date 2020/3/20
@@ -111,7 +114,36 @@ public class SnowFlakeIdGenerator54 extends AbstractSnowflakeIdGenerator
      */
     public SnowFlakeIdGenerator54(long machineId, long backupMachineId)
     {
-        super();
+        //默认以创建id生成器实例的时间开始计算
+        super(LocalDateTime.now(Clock.systemDefaultZone()));
+        //machine id 不能超出范围
+        if(machineId < MIN_MACHINE_ID || machineId > MAX_MACHINE_ID)
+        {
+            throw new IllegalArgumentException(String.format("machine id cannot be greater than %d and less than %d", MIN_MACHINE_ID,MAX_MACHINE_ID));
+        }
+        //backup machine id 不能超出范围
+        if(backupMachineId < MIN_BACKUP_MACHINE_ID || backupMachineId > MAX_BACKUP_MACHINE_ID)
+        {
+            throw new IllegalArgumentException(String.format("backup machine id cannot be greater than %d and less than %d", MIN_BACKUP_MACHINE_ID,MAX_BACKUP_MACHINE_ID));
+        }
+        this.MACHINE_ID = machineId;
+        this.BACKUP_MACHINE_ID = backupMachineId;
+        if(LOGGER.isDebugEnabled())
+        {
+            LOGGER.debug("The snowflake id generator with machine id {} is ready , it's backup machine id is {} .",MACHINE_ID,BACKUP_MACHINE_ID);
+        }
+    }
+
+    /**
+     * 构造函数
+     * @param machineId             当前工作机器的ID
+     * @param backupMachineId       当前工作机器的备用机器的ID
+     * @param startTime             id生成器开始的时间
+     */
+    public SnowFlakeIdGenerator54(long machineId, long backupMachineId,LocalDateTime startTime)
+    {
+        //指定开始时间
+        super(startTime);
         //machine id 不能超出范围
         if(machineId < MIN_MACHINE_ID || machineId > MAX_MACHINE_ID)
         {
