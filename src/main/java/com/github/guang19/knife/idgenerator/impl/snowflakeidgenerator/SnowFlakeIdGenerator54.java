@@ -2,7 +2,6 @@ package com.github.guang19.knife.idgenerator.impl.snowflakeidgenerator;
 
 
 import com.github.guang19.knife.idgenerator.IdGenerator;
-import com.github.guang19.knife.idgenerator.impl.snowflakeidgenerator.AbstractSnowflakeIdGenerator;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -119,12 +118,12 @@ public class SnowFlakeIdGenerator54 extends AbstractSnowflakeIdGenerator
         //machine id 不能超出范围
         if(machineId < MIN_MACHINE_ID || machineId > MAX_MACHINE_ID)
         {
-            throw new IllegalArgumentException(String.format("machine id cannot be greater than %d and less than %d", MIN_MACHINE_ID,MAX_MACHINE_ID));
+            throw new IllegalArgumentException(String.format("machine id must be between %d - %d", MIN_MACHINE_ID,MAX_MACHINE_ID));
         }
         //backup machine id 不能超出范围
         if(backupMachineId < MIN_BACKUP_MACHINE_ID || backupMachineId > MAX_BACKUP_MACHINE_ID)
         {
-            throw new IllegalArgumentException(String.format("backup machine id cannot be greater than %d and less than %d", MIN_BACKUP_MACHINE_ID,MAX_BACKUP_MACHINE_ID));
+            throw new IllegalArgumentException(String.format("backup machine id must be between %d - %d", MIN_BACKUP_MACHINE_ID,MAX_BACKUP_MACHINE_ID));
         }
         this.MACHINE_ID = machineId;
         this.BACKUP_MACHINE_ID = backupMachineId;
@@ -147,12 +146,12 @@ public class SnowFlakeIdGenerator54 extends AbstractSnowflakeIdGenerator
         //machine id 不能超出范围
         if(machineId < MIN_MACHINE_ID || machineId > MAX_MACHINE_ID)
         {
-            throw new IllegalArgumentException(String.format("machine id cannot be greater than %d and less than %d", MIN_MACHINE_ID,MAX_MACHINE_ID));
+            throw new IllegalArgumentException(String.format("machine id must be between %d - %d", MIN_MACHINE_ID,MAX_MACHINE_ID));
         }
         //backup machine id 不能超出范围
         if(backupMachineId < MIN_BACKUP_MACHINE_ID || backupMachineId > MAX_BACKUP_MACHINE_ID)
         {
-            throw new IllegalArgumentException(String.format("backup machine id cannot be greater than %d and less than %d", MIN_BACKUP_MACHINE_ID,MAX_BACKUP_MACHINE_ID));
+            throw new IllegalArgumentException(String.format("backup machine id must be between %d - %d", MIN_BACKUP_MACHINE_ID,MAX_BACKUP_MACHINE_ID));
         }
         this.MACHINE_ID = machineId;
         this.BACKUP_MACHINE_ID = backupMachineId;

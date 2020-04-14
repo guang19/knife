@@ -1,8 +1,5 @@
 package com.github.guang19.knife.idgenerator.impl.snowflakeidgenerator;
 
-
-import com.github.guang19.knife.idgenerator.impl.snowflakeidgenerator.AbstractSnowflakeIdGenerator;
-
 import java.time.Clock;
 import java.time.LocalDateTime;
 
@@ -27,53 +24,53 @@ import java.time.LocalDateTime;
  *     请酌情使用本生成器
  * </p>
  *
- * 我觉得原本的41位时间戳还是太大，所以就减少了一位时间戳，增加了一位自增序列
+ * 我觉得原本的41位时间戳和机器ID还是太大，所以就减少了一位时间戳和一位机器ID，增加了2位自增序列，使得毫秒内生成的id大大增加
  *
  * 改进后的生成器的位数如下:
  *
- * 1位符号位不用                            40位时间戳                              10位工作机器id        13位自增序列
+ * 1位符号位不用                            40位时间戳                             9位工作机器id        14位自增序列
  *
  *             40位时间戳:    ((1L << 40) / (1000L * 60 * 60 * 24 * 365)) 表示40位时间戳的ID能够用34年，如果用不到这么长，可以减少
- *             10位机器id:    (1L << 10)  记录机器的ID，可以表示1024个节点，如果没有那么多，可以减少
- *             13位自增序列:  (1L << 13)  代表生成的id单位为: 8192/ms, 如果并发量没有这么高，也可以减少
- *      0        -       00000000 00000000 00000000 00000000 00000000   -     00000000 00     -   00000000 00000
+ *             9位机器id:    (1L <<  9)  记录机器的ID，可以表示512个节点，如果没有那么多，可以减少
+ *             14位自增序列:  (1L <<  14)  代表生成的id单位为: 16384/ms, 如果并发量没有这么高，也可以减少
+ *      0        -       00000000 00000000 00000000 00000000 00000000   -     00000000 0     -   00000000 000000
  */
 public class SnowFlakeIdGenerator64 extends AbstractSnowflakeIdGenerator
 {
 
-    //工作机器ID占10位 ，最大支持 (1L << 10) = 1024 台机器 : 0 - 1023
-    private final long MACHINE_ID_BIT = 10L;
+    //工作机器ID占9位 ，最大支持 (1L << 9) = 512 台机器 : 0 - 511
+    private final long MACHINE_ID_BIT = 9L;
 
     /****************************************************************************/
 
     //当前机器ID,范围为 MIN_MACHINE_ID - MAX_MACHINE_ID : [0 - 511]
-    //512台正常使用，512台做备份: 0 - 511 是正常使用的机器ID， 512 - 1024是备用机器ID
+    //256台正常使用，256台做备份: 0 - 255 是正常使用的机器ID， 256 - 511 是备用机器ID
     private final long MACHINE_ID;
 
     //正常使用的最小机器ID
     private final long MIN_MACHINE_ID = 0L;
 
-    //正常使用的最大机器ID : (1L << 10L) - 1 = 1023 , 1023 >> 1 = 511.
+    //正常使用的最大机器ID : (1L << 9L) - 1 = 511 , 511 >> 1 = 255
     private final long MAX_MACHINE_ID = ((1L << MACHINE_ID_BIT) - 1) >> 1;
 
     /****************************************************************************/
 
-    //当前机器ID的备用机器ID,范围为 MIN_BACKUP_MACHINE_ID - MAX_BACKUP_MACHINE_ID : [512 - 1023]
-    //512台正常使用，512台做备份: 0 - 511 是正常使用的机器ID， 512 - 1024是备用机器ID
+    //当前机器ID的备用机器ID,范围为 MIN_BACKUP_MACHINE_ID - MAX_BACKUP_MACHINE_ID : [256 - 511]
+    //256台正常使用，256台做备份: 0 - 255 是正常使用的机器ID， 256 - 511是备用机器ID
     private final long BACKUP_MACHINE_ID;
 
-    //备用机器ID最小值: (1L << 10) >> 1 = 512
+    //备用机器ID最小值: (1L << 9) = 512 , 512 >> 1 = 256
     private final long MIN_BACKUP_MACHINE_ID = (1L << MACHINE_ID_BIT) >> 1;
 
-    //备用机器ID最大值 : (1L << 10) - 1 = 1023
+    //备用机器ID最大值 : (1L << 9) - 1 = 511
     private final long MAX_BACKUP_MACHINE_ID = ~(-1L << MACHINE_ID_BIT);
 
     /****************************************************************************/
 
-    //自增序列 ，占13位， 每毫秒支持 1L << 13 = 8192 个id : 0 - 8191
-    private final long INCR_SEQUENCE_BIT = 13L;
+    //自增序列 ，占14位， 每毫秒支持 1L << 14 = 16384 个id : 0 - 16383
+    private final long INCR_SEQUENCE_BIT = 14L;
 
-    //自增序列最大值 : (1L << 13) - 1 = 8191
+    //自增序列最大值 : (1L << 13) - 1 = 16383
     private final long MAX_INCR_SEQUENCE_BIT = ~(-1L << INCR_SEQUENCE_BIT);
 
     /****************************************************************************/
@@ -115,12 +112,12 @@ public class SnowFlakeIdGenerator64 extends AbstractSnowflakeIdGenerator
         //machine id 不能超出范围
         if(machineId < MIN_MACHINE_ID || machineId > MAX_MACHINE_ID)
         {
-            throw new IllegalArgumentException(String.format("machine id cannot be greater than %d and less than %d", MIN_MACHINE_ID,MAX_MACHINE_ID));
+            throw new IllegalArgumentException(String.format("machine id must be between %d - %d", MIN_MACHINE_ID,MAX_MACHINE_ID));
         }
         //backup machine id 不能超出范围
         if(backupMachineId < MIN_BACKUP_MACHINE_ID || backupMachineId > MAX_BACKUP_MACHINE_ID)
         {
-            throw new IllegalArgumentException(String.format("backup machine id cannot be greater than %d and less than %d", MIN_BACKUP_MACHINE_ID,MAX_BACKUP_MACHINE_ID));
+            throw new IllegalArgumentException(String.format("backup machine id must be between %d - %d", MIN_BACKUP_MACHINE_ID,MAX_BACKUP_MACHINE_ID));
         }
         this.MACHINE_ID = machineId;
         this.BACKUP_MACHINE_ID = backupMachineId;
@@ -143,12 +140,12 @@ public class SnowFlakeIdGenerator64 extends AbstractSnowflakeIdGenerator
         //machine id 不能超出范围
         if(machineId < MIN_MACHINE_ID || machineId > MAX_MACHINE_ID)
         {
-            throw new IllegalArgumentException(String.format("machine id cannot be greater than %d and less than %d", MIN_MACHINE_ID,MAX_MACHINE_ID));
+            throw new IllegalArgumentException(String.format("machine id must be between %d - %d", MIN_MACHINE_ID,MAX_MACHINE_ID));
         }
         //backup machine id 不能超出范围
         if(backupMachineId < MIN_BACKUP_MACHINE_ID || backupMachineId > MAX_BACKUP_MACHINE_ID)
         {
-            throw new IllegalArgumentException(String.format("backup machine id cannot be greater than %d and less than %d", MIN_BACKUP_MACHINE_ID,MAX_BACKUP_MACHINE_ID));
+            throw new IllegalArgumentException(String.format("backup machine id must be between %d - %d", MIN_BACKUP_MACHINE_ID,MAX_BACKUP_MACHINE_ID));
         }
         this.MACHINE_ID = machineId;
         this.BACKUP_MACHINE_ID = backupMachineId;
@@ -177,7 +174,7 @@ public class SnowFlakeIdGenerator64 extends AbstractSnowflakeIdGenerator
         else if(curTimestamp == lastTimestamp)
         {
             //如果当前毫秒内序列用尽,就阻塞到下一毫秒
-            //(++curMillSequence) & MAX_INCR_SEQUENCE_BIT) : (8191 + 1) & 8191 = 0 证明当前毫秒序列用完了
+            //(++curMillSequence) & MAX_INCR_SEQUENCE_BIT) : (16383 + 1) & 16383 = 0 证明当前毫秒序列用完了
             if(0L == (curMillSequence = ((++curMillSequence) & MAX_INCR_SEQUENCE_BIT)))
             {
                 lastTimestamp = curTimestamp = untilNextMillis(lastTimestamp);

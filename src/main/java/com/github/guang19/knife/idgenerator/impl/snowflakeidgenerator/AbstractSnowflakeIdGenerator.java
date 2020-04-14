@@ -36,8 +36,8 @@ public abstract class AbstractSnowflakeIdGenerator implements IdGenerator
         {
             LOGGER.debug("The snowflake id generator starting time is {}",startTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         }
-        //从当前时间戳算起，这样尽可能最大化 ID 使用时间 (32位时间戳可以使用4年，40位时间戳可以使用(34年))
-        START_EPOCH = startTime.toInstant(ZoneOffset.of("+8")).toEpochMilli();
+        //从当前时间戳算起，这样尽可能最大化 ID 使用时间 (32位时间戳可以使用4年，40位时间戳可以使用34)
+        this.START_EPOCH = startTime.toInstant(ZoneOffset.of("+8")).toEpochMilli();
         try
         {
             //sleep for a short period of time , because [START_EPOCH] start at current time

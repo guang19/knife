@@ -119,8 +119,27 @@ public class IdGeneratorTest
     {
         //编写 test06 的时间是: 2020/04/06
         //那么只要将时间定为: 2016/04/06 就差不多可以测出54次方的时间戳的范围
-       IdGenerator idGenerator = new SnowFlakeIdGenerator54(0,8, LocalDateTime.of(2016,4,6,0,0));
+       IdGenerator idGenerator = new SnowFlakeIdGenerator54(0,8, LocalDateTime.of(2015,12,1,0,0));
        System.out.println(idGenerator.generateId());
         System.out.println((1L << 53) - 1);
+    }
+
+    @Test
+    public void test07() throws Exception
+    {
+        System.out.println(1L << 9);
+        System.out.println((1L << 40) / (1000L * 60 * 60 * 24 * 365));
+        System.out.println(1L << 14);
+        System.out.println(511L >> 1);
+        System.out.println(511 - 255);
+        System.out.println(256 & 255);
+    }
+
+    @Test
+    public void test08() throws Exception
+    {
+        IdGenerator idGenerator = new SnowFlakeIdGenerator64(0,256,LocalDateTime.of(1985,6,14,0,0));
+        System.out.println(idGenerator.generateId());
+        System.out.println(Long.MAX_VALUE);
     }
 }
