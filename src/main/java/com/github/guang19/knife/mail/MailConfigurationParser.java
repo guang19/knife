@@ -9,7 +9,8 @@ public interface MailConfigurationParser
 {
     /**
      * 解析并返回邮箱配置
-     * @return      MailConfiguration
+     *
+     * @return MailConfiguration
      * @throws Exception 解析配置过程中的异常
      */
     public MailConfiguration parse() throws Exception;

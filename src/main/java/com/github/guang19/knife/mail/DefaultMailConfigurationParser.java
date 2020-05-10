@@ -26,6 +26,7 @@ public class DefaultMailConfigurationParser implements MailConfigurationParser
 
     /**
      * 解析并返回邮箱配置
+     *
      * @return MailConfiguration
      * @throws Exception 解析配置过程中的异常
      */
@@ -39,7 +40,7 @@ public class DefaultMailConfigurationParser implements MailConfigurationParser
     private MailConfiguration parse(String configuration) throws Exception
     {
         InputStream propertiesInputStream = ClassLoader.getSystemResourceAsStream(configuration);
-        if(propertiesInputStream == null)
+        if (propertiesInputStream == null)
         {
             throw new NullPointerException("cannot loading mail configuration.");
         }
@@ -49,7 +50,7 @@ public class DefaultMailConfigurationParser implements MailConfigurationParser
         checkedRequiredProperties(mailProperties);
         //设置默认属性
         setDefaultMailProperties(mailProperties);
-        MailConfiguration mailConfiguration = new MailConfiguration(mailProperties.getProperty(BaseMailConfiguration.USERNAME_KEY),mailProperties.getProperty(BaseMailConfiguration.PASSWORD_KEY));
+        MailConfiguration mailConfiguration = new MailConfiguration(mailProperties.getProperty(BaseMailConfiguration.USERNAME_KEY), mailProperties.getProperty(BaseMailConfiguration.PASSWORD_KEY));
         mailConfiguration.setProperties(mailProperties);
         //设置邮件接收类型
         mailConfiguration.setReceiveType(mailProperties.getProperty(BaseMailConfiguration.RECEIVE_TYPE_KEY).equals("cc") ? Message.RecipientType.CC :
@@ -60,58 +61,58 @@ public class DefaultMailConfigurationParser implements MailConfigurationParser
     //检查必需配置
     private void checkedRequiredProperties(Properties mailProperties)
     {
-        if(mailProperties.getProperty(BaseMailConfiguration.USERNAME_KEY) == null || mailProperties.getProperty(BaseMailConfiguration.PASSWORD_KEY) == null)
+        if (mailProperties.getProperty(BaseMailConfiguration.USERNAME_KEY) == null || mailProperties.getProperty(BaseMailConfiguration.PASSWORD_KEY) == null)
         {
             throw new MailConfigurationException("mail username or password cannot are not configured.");
         }
-        if(mailProperties.getProperty("mail.smtp.host") == null || mailProperties.getProperty("mail.smtp.port") == null)
+        if (mailProperties.getProperty("mail.smtp.host") == null || mailProperties.getProperty("mail.smtp.port") == null)
         {
             throw new MailConfigurationException("mail host or host's port cannot are not configured.");
         }
         else
         {
-            mailProperties.setProperty("mail.smtp.socketFactory.port",mailProperties.getProperty("mail.smtp.port"));
+            mailProperties.setProperty("mail.smtp.socketFactory.port", mailProperties.getProperty("mail.smtp.port"));
         }
     }
 
     //设置常用的缺省的默认属性
     private void setDefaultMailProperties(Properties mailProperties)
     {
-        if(mailProperties.getProperty(BaseMailConfiguration.RECEIVE_TYPE_KEY) == null)
+        if (mailProperties.getProperty(BaseMailConfiguration.RECEIVE_TYPE_KEY) == null)
         {
-            mailProperties.setProperty("mail.receive-type","to");
+            mailProperties.setProperty("mail.receive-type", "to");
         }
-        if(mailProperties.getProperty("mail.smtp.auth") == null)
+        if (mailProperties.getProperty("mail.smtp.auth") == null)
         {
-            mailProperties.setProperty("mail.smtp.auth","true");
+            mailProperties.setProperty("mail.smtp.auth", "true");
         }
-        if(mailProperties.getProperty("mail.transport.protocol") == null)
+        if (mailProperties.getProperty("mail.transport.protocol") == null)
         {
-            mailProperties.setProperty("mail.transport.protocol","smtp");
+            mailProperties.setProperty("mail.transport.protocol", "smtp");
         }
-        if(mailProperties.getProperty("mail.smtp.ssl.enable") == null)
+        if (mailProperties.getProperty("mail.smtp.ssl.enable") == null)
         {
-            mailProperties.setProperty("mail.smtp.ssl.enable","true");
+            mailProperties.setProperty("mail.smtp.ssl.enable", "true");
         }
-        if(mailProperties.getProperty("mail.smtp.starttls.enable") == null)
+        if (mailProperties.getProperty("mail.smtp.starttls.enable") == null)
         {
-            mailProperties.setProperty("mail.smtp.starttls.enable","true");
+            mailProperties.setProperty("mail.smtp.starttls.enable", "true");
         }
-        if(mailProperties.getProperty("mail.smtp.starttls.required") == null)
+        if (mailProperties.getProperty("mail.smtp.starttls.required") == null)
         {
-            mailProperties.setProperty("mail.smtp.starttls.required","true");
+            mailProperties.setProperty("mail.smtp.starttls.required", "true");
         }
-        if(mailProperties.getProperty("mail.smtp.socketFactory.class") == null)
+        if (mailProperties.getProperty("mail.smtp.socketFactory.class") == null)
         {
-            mailProperties.setProperty("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");
+            mailProperties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         }
-        if(mailProperties.getProperty("mail.smtp.socketFactory.fallback") == null)
+        if (mailProperties.getProperty("mail.smtp.socketFactory.fallback") == null)
         {
-            mailProperties.setProperty("mail.smtp.socketFactory.fallback","false");
+            mailProperties.setProperty("mail.smtp.socketFactory.fallback", "false");
         }
-        if(mailProperties.getProperty("mail.smtp.ssl.socketFactory.class") == null)
+        if (mailProperties.getProperty("mail.smtp.ssl.socketFactory.class") == null)
         {
-            mailProperties.setProperty("mail.smtp.ssl.socketFactory.class","javax.net.ssl.SSLSocketFactory");
+            mailProperties.setProperty("mail.smtp.ssl.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         }
     }
 }

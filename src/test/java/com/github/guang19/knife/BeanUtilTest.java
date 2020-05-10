@@ -134,7 +134,7 @@ public class BeanUtilTest
 
         Person2 person2 = new Person2();
 
-        BeanUtils.copyProperties(person1,person2);
+        BeanUtils.copyProperties(person1, person2);
 
         //true, 浅拷贝
         System.out.println(person1.getInner() == person2.getInner());
@@ -151,7 +151,7 @@ public class BeanUtilTest
         person1.setName("yxg");
         person1.setInner(new Inner());
 
-        System.out.println(BeanUtils.createTargetObj(person1,Person2.class));
+        System.out.println(BeanUtils.createTargetObj(person1, Person2.class));
     }
 
 
@@ -207,7 +207,7 @@ public class BeanUtilTest
     }
 
     @Test
-    public void  test03() throws Exception
+    public void test03() throws Exception
     {
         Person1 person1 = new Person1();
         person1.setId(1L);
@@ -217,16 +217,16 @@ public class BeanUtilTest
 
         Person3 person3 = new Person3();
 
-        BeanCopier beanCopier1 = BeanCopier.create(Person1.class,Person3.class,false);
+        BeanCopier beanCopier1 = BeanCopier.create(Person1.class, Person3.class, false);
 
-        beanCopier1.copy(person1,person3,null);
+        beanCopier1.copy(person1, person3, null);
         System.out.println(person3);
 
         Person3 person32 = new Person3();
 
-        BeanCopier beanCopier2 = BeanCopier.create(Person1.class,Person3.class,true);
+        BeanCopier beanCopier2 = BeanCopier.create(Person1.class, Person3.class, true);
 
-        beanCopier2.copy(person1,person32,(arg,clazz,obj2)->
+        beanCopier2.copy(person1, person32, (arg, clazz, obj2) ->
         {
             if (arg instanceof Long)
             {
@@ -236,7 +236,7 @@ public class BeanUtilTest
             {
                 return (Integer) arg;
             }
-            if(arg instanceof Inner)
+            if (arg instanceof Inner)
             {
                 return arg.toString();
             }
@@ -257,16 +257,17 @@ public class BeanUtilTest
         person1.setInner(new Inner());
 
         Person3 person3 = new Person3();
-        BeanUtils.copyProperties(person1,person3, fieldVal -> {
-            if(fieldVal instanceof Integer)
+        BeanUtils.copyProperties(person1, person3, fieldVal ->
+        {
+            if (fieldVal instanceof Integer)
             {
                 return (Integer) fieldVal;
             }
-            if(fieldVal instanceof Long)
+            if (fieldVal instanceof Long)
             {
                 return (Long) fieldVal;
             }
-            if(fieldVal instanceof Inner)
+            if (fieldVal instanceof Inner)
             {
                 return fieldVal.toString();
             }
@@ -288,16 +289,17 @@ public class BeanUtilTest
 
 //        System.out.println(BeanUtil.createTargetObj(person1,Person3.class));
 
-        System.out.println(BeanUtils.createTargetObj(person1,Person3.class, fieldVal -> {
-            if(fieldVal instanceof Integer)
+        System.out.println(BeanUtils.createTargetObj(person1, Person3.class, fieldVal ->
+        {
+            if (fieldVal instanceof Integer)
             {
                 return (Integer) fieldVal;
             }
-            if(fieldVal instanceof Long)
+            if (fieldVal instanceof Long)
             {
                 return (Long) fieldVal;
             }
-            if(fieldVal instanceof Inner)
+            if (fieldVal instanceof Inner)
             {
                 return fieldVal.toString();
             }
@@ -331,7 +333,7 @@ public class BeanUtilTest
         person1Set.add(person1);
         person1Set.add(person2);
 
-        Set<Person2> person2Set = BeanUtils.createTargetCollection(person1Set,Person2.class);
+        Set<Person2> person2Set = BeanUtils.createTargetCollection(person1Set, Person2.class);
 
         System.out.println(person2Set);
     }
@@ -351,20 +353,20 @@ public class BeanUtilTest
         person2.setName("yxg2");
         person2.setInner(new Inner());
 
-        List<Person1> person1List = new ArrayList<>(Arrays.asList(person1,person2));
+        List<Person1> person1List = new ArrayList<>(Arrays.asList(person1, person2));
         System.out.println("person1List : " + person1List);
 
-        List<Person3> person3List = BeanUtils.createTargetCollection(person1List,Person3.class,(fieldVal ->
+        List<Person3> person3List = BeanUtils.createTargetCollection(person1List, Person3.class, (fieldVal ->
         {
-            if(fieldVal instanceof Integer)
+            if (fieldVal instanceof Integer)
             {
                 return (Integer) fieldVal;
             }
-            if(fieldVal instanceof Long)
+            if (fieldVal instanceof Long)
             {
                 return (Long) fieldVal;
             }
-            if(fieldVal instanceof Inner)
+            if (fieldVal instanceof Inner)
             {
                 return fieldVal.toString();
             }
@@ -372,20 +374,20 @@ public class BeanUtilTest
         }));
         System.out.println("person3List " + person3List);
 
-        Set<Person1> person1Set = new HashSet<>(Arrays.asList(person1,person2));
+        Set<Person1> person1Set = new HashSet<>(Arrays.asList(person1, person2));
         System.out.println("person1Set : " + person1Set);
 
-        Set<Person3> person3Set = BeanUtils.createTargetCollection(person1Set,Person3.class,(fieldVal ->
+        Set<Person3> person3Set = BeanUtils.createTargetCollection(person1Set, Person3.class, (fieldVal ->
         {
-            if(fieldVal instanceof Integer)
+            if (fieldVal instanceof Integer)
             {
                 return (Integer) fieldVal;
             }
-            if(fieldVal instanceof Long)
+            if (fieldVal instanceof Long)
             {
                 return (Long) fieldVal;
             }
-            if(fieldVal instanceof Inner)
+            if (fieldVal instanceof Inner)
             {
                 return fieldVal.toString();
             }

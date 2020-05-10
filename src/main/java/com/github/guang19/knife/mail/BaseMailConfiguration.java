@@ -28,7 +28,6 @@ public class BaseMailConfiguration
     private Message.RecipientType receiveType;
 
     /**
-     *
      * @param username 邮箱地址
      * @param password 邮箱授权码
      */
@@ -40,6 +39,7 @@ public class BaseMailConfiguration
 
     /**
      * getter
+     *
      * @return password
      */
     public String getPassword()
@@ -49,6 +49,7 @@ public class BaseMailConfiguration
 
     /**
      * getter
+     *
      * @return username
      */
     public String getUsername()
@@ -58,6 +59,7 @@ public class BaseMailConfiguration
 
     /**
      * setter
+     *
      * @param receiveType 接收邮件的类型
      */
     public void setReceiveType(Message.RecipientType receiveType)
@@ -67,7 +69,8 @@ public class BaseMailConfiguration
 
     /**
      * getter
-     * @return  receiveType 接收邮件的类型
+     *
+     * @return receiveType 接收邮件的类型
      */
     public Message.RecipientType getReceiveType()
     {

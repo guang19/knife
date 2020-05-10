@@ -6,7 +6,7 @@
 
     <groupId>com.github.guang19</groupId>
     <artifactId>knife</artifactId>
-    <version>1.0.4</version>
+    <version>2.0.0</version>
     <name>knife utils</name>
     <description>小刀锋利工具类</description>
 

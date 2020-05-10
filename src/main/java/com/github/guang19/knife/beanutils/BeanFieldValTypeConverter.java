@@ -112,8 +112,9 @@ public interface BeanFieldValTypeConverter
 
     /**
      * 转换bean的属性值
-     * @param   fieldVal    属性值
-     * @return              转换后的属性值
+     *
+     * @param fieldVal 属性值
+     * @return 转换后的属性值
      */
     public abstract Object convertFieldValType(Object fieldVal);
 }

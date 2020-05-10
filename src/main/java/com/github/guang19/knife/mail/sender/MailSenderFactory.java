@@ -9,7 +9,8 @@ public interface MailSenderFactory
 {
     /**
      * 获取MailSender
-     * @return  MailSender
+     *
+     * @return MailSender
      */
     public abstract MailSender getMailSender();
 }

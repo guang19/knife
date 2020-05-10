@@ -9,7 +9,8 @@ public interface MailSenderFactoryBuilder
 {
     /**
      * 构造MailSenderFactory
-     * @return  MailSenderFactory
+     *
+     * @return MailSenderFactory
      */
     public abstract MailSenderFactory build();
 }

@@ -11,13 +11,15 @@ public interface IdGenerator
 {
     /**
      * 生成 long 类型的id
-     * @return  id
+     *
+     * @return id
      */
     public abstract long generateId();
 
     /**
      * 生成UUID,UUID虽然几乎不会重复，但是不适合作为主键，它的损耗太大了。
-     * @return      UUID
+     *
+     * @return UUID
      */
     public default String generateStrId()
     {

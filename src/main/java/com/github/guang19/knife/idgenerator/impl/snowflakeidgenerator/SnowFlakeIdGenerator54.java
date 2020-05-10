@@ -9,37 +9,36 @@ import java.time.LocalDateTime;
 /**
  * @author yangguang
  * @date 2020/3/20
- * @description  54位雪花ID生成器
- *
- *  64位雪花ID组成如下:
- *
+ * @description 54位雪花ID生成器
+ * <p>
+ * 64位雪花ID组成如下:
+ * <p>
  * 1位符号位不用                            41位时间戳                              10位工作机器id        12位自增序列
- *
- *             41位时间戳:    ((1L << 41) / (1000L * 60 * 60 * 24 * 365)) 表示41位时间戳的ID能够用69年，如果用不到这么长，可以减少
- *             10位机器id:    (1L << 10)  记录机器的ID，可以表示1024个节点，如果没有那么多，可以减少
- *             12位自增序列:  (1L << 12)  代表生成的id单位为: 4096/ms, 如果并发量没有这么高，也可以减少
- *      0        -       00000000 00000000 00000000 00000000 00000000 0    -     00000000 00     -   00000000 0000
- *
+ * <p>
+ * 41位时间戳:    ((1L << 41) / (1000L * 60 * 60 * 24 * 365)) 表示41位时间戳的ID能够用69年，如果用不到这么长，可以减少
+ * 10位机器id:    (1L << 10)  记录机器的ID，可以表示1024个节点，如果没有那么多，可以减少
+ * 12位自增序列:  (1L << 12)  代表生成的id单位为: 4096/ms, 如果并发量没有这么高，也可以减少
+ * 0        -       00000000 00000000 00000000 00000000 00000000 0    -     00000000 00     -   00000000 0000
+ * <p>
  * 64位雪花id最大能表示的数值为: 2^63 - 1
  *
  * <p>
- *     前端js最大安全整数的范围为 2^53 - 1
- *     因此为了兼容性，此处只提供最大值为54位的雪花ID生成器
+ * 前端js最大安全整数的范围为 2^53 - 1
+ * 因此为了兼容性，此处只提供最大值为54位的雪花ID生成器
  * </p>
- *
+ * <p>
  * 改进后的生成器的位数如下:
- *
- *   1位符号位不用              37位时间戳                                 4位工作机器ID       12位自增序列
- *
- *                      37位时间戳表示最多可以支持4年
- *                      4位工作机器Id可以支持16台机器,但为了保持高可用，所以我又分为正常使用的机器和备用机器: 8台正常使用，8台备用
- *                      12位自增序列可以支持 4096/ms 的并发
- *     0        -      00000000 00000000 00000000 00000000 00000     -  0000     -    00000000 0000
- *
- *  54位雪花Id的最大值为: 2^53 - 1
- *
- *    以上是我权衡利弊之后做出的选择策略，各位同学也可以根据自己的实际情况选择合适的实现，实现 {@link IdGenerator} 接口就行
- *
+ * <p>
+ * 1位符号位不用              37位时间戳                                 4位工作机器ID       12位自增序列
+ * <p>
+ * 37位时间戳表示最多可以支持4年
+ * 4位工作机器Id可以支持16台机器,但为了保持高可用，所以我又分为正常使用的机器和备用机器: 8台正常使用，8台备用
+ * 12位自增序列可以支持 4096/ms 的并发
+ * 0        -      00000000 00000000 00000000 00000000 00000     -  0000     -    00000000 0000
+ * <p>
+ * 54位雪花Id的最大值为: 2^53 - 1
+ * <p>
+ * 以上是我权衡利弊之后做出的选择策略，各位同学也可以根据自己的实际情况选择合适的实现，实现 {@link IdGenerator} 接口就行
  */
 public class SnowFlakeIdGenerator54 extends AbstractSnowflakeIdGenerator
 {
@@ -108,62 +107,64 @@ public class SnowFlakeIdGenerator54 extends AbstractSnowflakeIdGenerator
 
     /**
      * 构造函数
-     * @param machineId             当前工作机器的ID
-     * @param backupMachineId       当前工作机器的备用机器的ID
+     *
+     * @param machineId       当前工作机器的ID
+     * @param backupMachineId 当前工作机器的备用机器的ID
      */
     public SnowFlakeIdGenerator54(long machineId, long backupMachineId)
     {
         //默认以创建id生成器实例的时间开始计算
         super(LocalDateTime.now(Clock.systemDefaultZone()));
         //machine id 不能超出范围
-        if(machineId < MIN_MACHINE_ID || machineId > MAX_MACHINE_ID)
+        if (machineId < MIN_MACHINE_ID || machineId > MAX_MACHINE_ID)
         {
-            throw new IllegalArgumentException(String.format("machine id must be between %d - %d", MIN_MACHINE_ID,MAX_MACHINE_ID));
+            throw new IllegalArgumentException(String.format("machine id must be between %d - %d", MIN_MACHINE_ID, MAX_MACHINE_ID));
         }
         //backup machine id 不能超出范围
-        if(backupMachineId < MIN_BACKUP_MACHINE_ID || backupMachineId > MAX_BACKUP_MACHINE_ID)
+        if (backupMachineId < MIN_BACKUP_MACHINE_ID || backupMachineId > MAX_BACKUP_MACHINE_ID)
         {
-            throw new IllegalArgumentException(String.format("backup machine id must be between %d - %d", MIN_BACKUP_MACHINE_ID,MAX_BACKUP_MACHINE_ID));
+            throw new IllegalArgumentException(String.format("backup machine id must be between %d - %d", MIN_BACKUP_MACHINE_ID, MAX_BACKUP_MACHINE_ID));
         }
         this.MACHINE_ID = machineId;
         this.BACKUP_MACHINE_ID = backupMachineId;
-        if(LOGGER.isDebugEnabled())
+        if (LOGGER.isDebugEnabled())
         {
-            LOGGER.debug("The snowflake id generator with machine id {} is ready , it's backup machine id is {} .",MACHINE_ID,BACKUP_MACHINE_ID);
+            LOGGER.debug("The snowflake id generator with machine id {} is ready , it's backup machine id is {} .", MACHINE_ID, BACKUP_MACHINE_ID);
         }
     }
 
     /**
      * 构造函数
-     * @param machineId             当前工作机器的ID
-     * @param backupMachineId       当前工作机器的备用机器的ID
-     * @param startTime             id生成器开始的时间
+     *
+     * @param machineId       当前工作机器的ID
+     * @param backupMachineId 当前工作机器的备用机器的ID
+     * @param startTime       id生成器开始的时间
      */
-    public SnowFlakeIdGenerator54(long machineId, long backupMachineId,LocalDateTime startTime)
+    public SnowFlakeIdGenerator54(long machineId, long backupMachineId, LocalDateTime startTime)
     {
         //指定开始时间
         super(startTime);
         //machine id 不能超出范围
-        if(machineId < MIN_MACHINE_ID || machineId > MAX_MACHINE_ID)
+        if (machineId < MIN_MACHINE_ID || machineId > MAX_MACHINE_ID)
         {
-            throw new IllegalArgumentException(String.format("machine id must be between %d - %d", MIN_MACHINE_ID,MAX_MACHINE_ID));
+            throw new IllegalArgumentException(String.format("machine id must be between %d - %d", MIN_MACHINE_ID, MAX_MACHINE_ID));
         }
         //backup machine id 不能超出范围
-        if(backupMachineId < MIN_BACKUP_MACHINE_ID || backupMachineId > MAX_BACKUP_MACHINE_ID)
+        if (backupMachineId < MIN_BACKUP_MACHINE_ID || backupMachineId > MAX_BACKUP_MACHINE_ID)
         {
-            throw new IllegalArgumentException(String.format("backup machine id must be between %d - %d", MIN_BACKUP_MACHINE_ID,MAX_BACKUP_MACHINE_ID));
+            throw new IllegalArgumentException(String.format("backup machine id must be between %d - %d", MIN_BACKUP_MACHINE_ID, MAX_BACKUP_MACHINE_ID));
         }
         this.MACHINE_ID = machineId;
         this.BACKUP_MACHINE_ID = backupMachineId;
-        if(LOGGER.isDebugEnabled())
+        if (LOGGER.isDebugEnabled())
         {
-            LOGGER.debug("The snowflake id generator with machine id {} is ready , it's backup machine id is {} .",MACHINE_ID,BACKUP_MACHINE_ID);
+            LOGGER.debug("The snowflake id generator with machine id {} is ready , it's backup machine id is {} .", MACHINE_ID, BACKUP_MACHINE_ID);
         }
     }
 
 
     /**
-     *  生成54位的雪花Id
+     * 生成54位的雪花Id
      *
      * @return Id
      */
@@ -172,18 +173,18 @@ public class SnowFlakeIdGenerator54 extends AbstractSnowflakeIdGenerator
     {
         long curTimestamp = currentMillisTimestamp();
         //如果时钟回拨
-        if(curTimestamp < lastTimestamp)
+        if (curTimestamp < lastTimestamp)
         {
-            LOGGER.warn("system clock moved backwards , last: {} , now: {} .",lastTimestamp,curTimestamp);
+            LOGGER.warn("system clock moved backwards , last: {} , now: {} .", lastTimestamp, curTimestamp);
             //启用备用机器生成ID
             return nextBackId(curTimestamp);
         }
         //如果上次生成的时间戳与当前生成的时间戳相同，则自增毫秒内的序列
-        else if(curTimestamp == lastTimestamp)
+        else if (curTimestamp == lastTimestamp)
         {
             //如果当前毫秒内序列用尽,就阻塞到下一毫秒
             //(++curMillSequence) & MAX_INCR_SEQUENCE_BIT) : (4095 + 1) & 4095 = 0 证明当前毫秒序列用完了
-            if(0L == (curMillSequence = ((++curMillSequence) & MAX_INCR_SEQUENCE_BIT)))
+            if (0L == (curMillSequence = ((++curMillSequence) & MAX_INCR_SEQUENCE_BIT)))
             {
                 lastTimestamp = curTimestamp = untilNextMillis(lastTimestamp);
             }
@@ -201,17 +202,17 @@ public class SnowFlakeIdGenerator54 extends AbstractSnowflakeIdGenerator
     /***
      * 使用备用机器生成ID
      * @param curTimestamp  当前时间戳
-     * @return              备用机器生成的ID
+     * @return 备用机器生成的ID
      */
     private long nextBackId(long curTimestamp)
     {
         //当前时间与备用机器的上次获取ID的时间比较
-        if(curTimestamp < backupMachineLastTimestamp)
+        if (curTimestamp < backupMachineLastTimestamp)
         {
             //如果当前回拨时间超过1s,直接抛出异常
-            if(backupMachineLastTimestamp - curTimestamp > MAX_BACKWARD_TIME)
+            if (backupMachineLastTimestamp - curTimestamp > MAX_BACKWARD_TIME)
             {
-                throw new IllegalStateException(String.format("system clock moved backwards more than %d ms , last: %d , now: %d .",MAX_BACKWARD_TIME,backupMachineLastTimestamp,curTimestamp));
+                throw new IllegalStateException(String.format("system clock moved backwards more than %d ms , last: %d , now: %d .", MAX_BACKWARD_TIME, backupMachineLastTimestamp, curTimestamp));
             }
             else
             {
@@ -220,10 +221,10 @@ public class SnowFlakeIdGenerator54 extends AbstractSnowflakeIdGenerator
             }
         }
         //如果时间戳相同，就自增毫秒序列
-        else if(curTimestamp == backupMachineLastTimestamp)
+        else if (curTimestamp == backupMachineLastTimestamp)
         {
             //如果备份机器的当前自增序列用尽，就阻塞到下一毫秒
-            if(0L == (backupMachineCurMillSequence = ((++backupMachineCurMillSequence) & MAX_INCR_SEQUENCE_BIT)))
+            if (0L == (backupMachineCurMillSequence = ((++backupMachineCurMillSequence) & MAX_INCR_SEQUENCE_BIT)))
             {
                 backupMachineLastTimestamp = curTimestamp = untilNextMillis(backupMachineLastTimestamp);
             }

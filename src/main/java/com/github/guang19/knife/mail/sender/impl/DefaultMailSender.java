@@ -19,7 +19,7 @@ public class DefaultMailSender extends AbstractMailSender
      */
     /**
      * @param mailSession mail会话
-     * @param receiveType   邮件接收类型
+     * @param receiveType 邮件接收类型
      */
     public DefaultMailSender(Session mailSession, Message.RecipientType receiveType)
     {
@@ -37,7 +37,7 @@ public class DefaultMailSender extends AbstractMailSender
     @Override
     public void sendTextMessage(String subject, String text, String from, String... receivers)
     {
-        sendMessage(createTextMessage(subject,text,from,receivers));
+        sendMessage(createTextMessage(subject, text, from, receivers));
     }
 
     /**
@@ -51,7 +51,7 @@ public class DefaultMailSender extends AbstractMailSender
     @Override
     public void sendHtmlMessage(String subject, String content, String from, String... receivers)
     {
-        sendMessage(createHtmlMessage(subject,content,from,receivers));
+        sendMessage(createHtmlMessage(subject, content, from, receivers));
     }
 
     /**
@@ -67,7 +67,7 @@ public class DefaultMailSender extends AbstractMailSender
     @Override
     public void sendTextMessageWithAttachment(String subject, String text, String file, String fileName, String from, String... receivers)
     {
-        sendMessage(createTextMessageWithAttachment(subject,text,file,fileName,from,receivers));
+        sendMessage(createTextMessageWithAttachment(subject, text, file, fileName, from, receivers));
     }
 
     /**
@@ -84,7 +84,7 @@ public class DefaultMailSender extends AbstractMailSender
     @Override
     public void sendTextMessageWithAttachment(String subject, String text, InputStream fileStream, String type, String fileName, String from, String... receivers)
     {
-        sendMessage(createTextMessageWithAttachment(subject,text,fileStream,type,fileName,from,receivers));
+        sendMessage(createTextMessageWithAttachment(subject, text, fileStream, type, fileName, from, receivers));
     }
 
     /**
@@ -100,7 +100,7 @@ public class DefaultMailSender extends AbstractMailSender
     @Override
     public void sendHtmlMessageWithAttachment(String subject, String content, String file, String fileName, String from, String... receivers)
     {
-        sendMessage(createHtmlMessageWithAttachment(subject,content,file,fileName,from,receivers));
+        sendMessage(createHtmlMessageWithAttachment(subject, content, file, fileName, from, receivers));
     }
 
     /**
@@ -117,6 +117,6 @@ public class DefaultMailSender extends AbstractMailSender
     @Override
     public void sendHtmlMessageWithAttachment(String subject, String content, InputStream fileStream, String type, String fileName, String from, String... receivers)
     {
-        sendMessage(createHtmlMessageWithAttachment(subject,content,fileStream,type,fileName,from,receivers));
+        sendMessage(createHtmlMessageWithAttachment(subject, content, fileStream, type, fileName, from, receivers));
     }
 }

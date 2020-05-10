@@ -28,27 +28,26 @@ public class MainUtilsTest
     Session session;
 
 
-
     @Before
     public void before()
     {
-        properties.setProperty("mail.smtp.host","smtp.qq.com");
-        properties.setProperty("mail.smtp.port","465");
-        properties.setProperty("mail.smtp.auth","true");
-        properties.setProperty("mail.transport.protocol","smtp");
-        properties.setProperty("mail.smtp.ssl.enable","true");
-        properties.setProperty("mail.smtp.starttls.enable","true");
-        properties.setProperty("mail.smtp.starttls.required","true");
-        properties.setProperty("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");
-        properties.setProperty("mail.smtp.socketFactory.fallback","false");
-        properties.setProperty("mail.smtp.ssl.socketFactory.class","javax.net.ssl.SSLSocketFactory");
+        properties.setProperty("mail.smtp.host", "smtp.qq.com");
+        properties.setProperty("mail.smtp.port", "465");
+        properties.setProperty("mail.smtp.auth", "true");
+        properties.setProperty("mail.transport.protocol", "smtp");
+        properties.setProperty("mail.smtp.ssl.enable", "true");
+        properties.setProperty("mail.smtp.starttls.enable", "true");
+        properties.setProperty("mail.smtp.starttls.required", "true");
+        properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        properties.setProperty("mail.smtp.socketFactory.fallback", "false");
+        properties.setProperty("mail.smtp.ssl.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 
         session = Session.getDefaultInstance(properties, new Authenticator()
         {
             @Override
             protected PasswordAuthentication getPasswordAuthentication()
             {
-                return new PasswordAuthentication("xxxxxxxx","xxxxxxx");
+                return new PasswordAuthentication("xxxxxxxx", "xxxxxxx");
             }
         });
     }
@@ -57,10 +56,10 @@ public class MainUtilsTest
     @Test
     public void tes01() throws Throwable
     {
-        MimeMessage mimeMessage  = new MimeMessage(session);
+        MimeMessage mimeMessage = new MimeMessage(session);
         mimeMessage.setFrom("2196927727@qq.com");
         mimeMessage.addRecipients(Message.RecipientType.TO,
-                new InternetAddress[]{new InternetAddress("2196927727@qq.com"),new InternetAddress("1446125917@qq.com")});
+                new InternetAddress[]{new InternetAddress("2196927727@qq.com"), new InternetAddress("1446125917@qq.com")});
         mimeMessage.setSubject("简单邮件标题");
         mimeMessage.setText("");
 
@@ -71,12 +70,12 @@ public class MainUtilsTest
     @Test
     public void test02() throws Throwable
     {
-        MimeMessage mimeMessage  = new MimeMessage(session);
+        MimeMessage mimeMessage = new MimeMessage(session);
         mimeMessage.setFrom("2196927727@qq.com");
         mimeMessage.addRecipients(Message.RecipientType.TO,
-                new InternetAddress[]{new InternetAddress("2196927727@qq.com"),new InternetAddress("1446125917@qq.com")});
+                new InternetAddress[]{new InternetAddress("2196927727@qq.com"), new InternetAddress("1446125917@qq.com")});
         mimeMessage.setSubject("简单邮件标题");
-        mimeMessage.setContent("<h1>html邮件</h1>","text/html;charset=utf-8");
+        mimeMessage.setContent("<h1>html邮件</h1>", "text/html;charset=utf-8");
         Transport.send(mimeMessage);
     }
 
@@ -85,7 +84,7 @@ public class MainUtilsTest
     public void test03() throws Throwable
     {
 
-        MimeMessage mimeMessage  = new MimeMessage(session);
+        MimeMessage mimeMessage = new MimeMessage(session);
         mimeMessage.setFrom("2196927727@qq.com");
         mimeMessage.addRecipients(Message.RecipientType.TO,
                 "2196927727@qq.com");
@@ -94,7 +93,7 @@ public class MainUtilsTest
         BodyPart bodyPart1 = new MimeBodyPart();
 //        bodyPart1.setText("附件内容");
 
-        bodyPart1.setContent("<h1>html邮件</h1>","text/html;charset=utf-8");
+        bodyPart1.setContent("<h1>html邮件</h1>", "text/html;charset=utf-8");
 
         BodyPart bodyPart2 = new MimeBodyPart();
         DataSource dataSource = new FileDataSource("/home/yangguang/下载/tcp-ip-.pdf");
@@ -118,7 +117,7 @@ public class MainUtilsTest
     @Test
     public void test04() throws Exception
     {
-        MailSenderFactory mailSenderFactory =  new DefaultMailSenderFactoryBuilder("mail.properties").build();
+        MailSenderFactory mailSenderFactory = new DefaultMailSenderFactoryBuilder("mail.properties").build();
         MailSender mailSender = mailSenderFactory.getMailSender();
 //        mailSender.sendTextMessage("简单邮件标题","简单邮件","2196927727@qq.com","2196927727@qq.com");
 

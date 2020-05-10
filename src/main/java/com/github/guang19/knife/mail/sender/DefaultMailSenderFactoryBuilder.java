@@ -25,6 +25,7 @@ public class DefaultMailSenderFactoryBuilder implements MailSenderFactoryBuilder
 
     /**
      * 构造DefaultMailSenderFactory
+     *
      * @return MailSenderFactory
      */
     @Override
@@ -44,7 +45,7 @@ public class DefaultMailSenderFactoryBuilder implements MailSenderFactoryBuilder
         }
         catch (Exception e)
         {
-            throw new MailConfigurationException("an exception occurred while loading the mail configuration.",e);
+            throw new MailConfigurationException("an exception occurred while loading the mail configuration.", e);
         }
     }
 

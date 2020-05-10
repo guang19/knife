@@ -13,17 +13,18 @@ public class MailConfiguration extends BaseMailConfiguration
     private Properties properties;
 
     /**
-     * @param username  用户名
-     * @param password  授权码
+     * @param username 用户名
+     * @param password 授权码
      */
-    public MailConfiguration(String username,String password)
+    public MailConfiguration(String username, String password)
     {
-        super(username,password);
+        super(username, password);
     }
 
     /**
      * setter
-     * @param properties    java mail属性
+     *
+     * @param properties java mail属性
      */
     public void setProperties(Properties properties)
     {
@@ -32,7 +33,8 @@ public class MailConfiguration extends BaseMailConfiguration
 
     /**
      * getter
-     * @return     java mail属性
+     *
+     * @return java mail属性
      */
     public Properties getProperties()
     {

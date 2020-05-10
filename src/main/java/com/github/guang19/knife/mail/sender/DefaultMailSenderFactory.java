@@ -46,9 +46,9 @@ public class DefaultMailSenderFactory implements MailSenderFactory
                     @Override
                     protected PasswordAuthentication getPasswordAuthentication()
                     {
-                        return new PasswordAuthentication(mailConfiguration.getUsername(),mailConfiguration.getPassword());
+                        return new PasswordAuthentication(mailConfiguration.getUsername(), mailConfiguration.getPassword());
                     }
                 });
-        return new DefaultMailSender(session,mailConfiguration.getReceiveType());
+        return new DefaultMailSender(session, mailConfiguration.getReceiveType());
     }
 }

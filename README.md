@@ -10,7 +10,6 @@
 | MailUtils        | 邮件工具。支持普通文本邮件，html邮件，附件邮件。 |
 | ReflectionUtils  | 反射工具。包含了常用的反射方法。|
 | RegexUtils       | 正则工具。包含了简单的正则函数和常用的正则表达式。|
-| SensitiveFilter  | 敏感内容过滤器。目前包含敏感词过滤器。  |
 
 
 使用:
@@ -19,7 +18,7 @@ maven:
 ````text
  <groupId>com.github.guang19</groupId>
  <artifactId>knife</artifactId>
- <version>1.0.4</version>
+ <version>2.0.0</version>
 ````
 
 ### BeanUtils
@@ -246,74 +245,3 @@ ReflectionUtils反射工具类，其实是将常用的Class类的方法简单封
 
 正则的作用就不强调了，毕竟他不是专属Java的。我对于正则工具的封装也比较简单，只提供了几个常用的方法。
 另外我自己也写了一些常用的正则表达式,见: [CommonRegexExpression](https://github.com/guang19/knife/blob/master/src/main/java/com/github/guang19/knife/regexutils/CommonRegexExpression.java)
-
-
-### SensitiveFilter
-
-敏感内容过滤器，目前有敏感词过滤器的实现，采用的是DFA算法trie树的实现。
-
-
-敏感词过滤器由2部分组成: 敏感词库和StopChar(无需处理的字符)库。
-
-默认的敏感词库和StopChar库见:
-[词库](https://github.com/guang19/knife/tree/master/src/main/resources)
-
-参考这2位大神的仓库:
-
-- [词库1](https://github.com/fighting41love/funNLP/tree/master/data/%E6%95%8F%E6%84%9F%E8%AF%8D%E5%BA%93)
-- [词库2](https://github.com/fwwdn/sensitive-stop-words)
-
-我也将这2个词库整合了,见:
-
-[sensitiveword-repository](https://github.com/guang19/sensitiveword-repository)
-
-比如在敏感词库中有一个敏感词: "傻子"。
-
-有一段话: "你是个傻,子".
-
-如果符号 "," 在StopChar库中， 那么这种程度的干扰是起不到作用的。
-但是如果遇到:  "你是个sha子" 这句话就无法辨别了，除非把: "sha子" 加进敏感词库。
-
-SensitiveWordFilter支持贪婪匹配和非贪婪匹配2种模式。
-假设有2个敏感词: "傻" , "傻子".
-
-- 贪婪模式匹配内容中更长的敏感词: "你是傻子" 。 那么匹配: "傻子"
-- 非贪婪模式匹配内容中更短的敏感词: "你是傻子"。 那么匹配: "傻"
-
-#### SensitiveFilter使用
-
-创建:
-````text
-//构造默认的敏感词过滤器，会使用默认的敏感词库和StopChar库
-SensitiveWordFilter sensitiveWordFilter =
- new TextSensitiveWordFilterBuilder().build();
-````
-
-添加除了词库之外的敏感词:
-````text
- sensitiveWordFilter.addSensitiveWord("傻子");
-````
-
-获取内容中的敏感词:
-```text
-//[傻子]
-sensitiveWordFilter.getSensitiveWords("你真，是个大傻，子呀,你真是个大傻子呀");
-```
-
-过滤掉内容中的敏感词:
-````text
-//结果: 你真是个大********aa
-sensitiveWordFilter.doFilter("你真是个大傻子aa")
-````
-
-可以使用setReplaceChar方法设置替换字符(默认为:"*"):
-````text
-((DefaultSensitiveWordFilter)sensitiveWordFilter).setReplaceChar("-");
-````
-
-设置非贪婪模式(默认为贪婪模式):
-```text
- ((DefaultSensitiveWordFilter)sensitiveWordFilter).setGreedy(false);
-```
-
-错误之处，请各位同学指教。

@@ -20,10 +20,10 @@ public class IdGeneratorTest
     @Test
     public void test01() throws Exception
     {
-        IdGenerator idGenerator1 = new SnowFlakeIdGenerator54(0,8);
-        IdGenerator idGenerator2 = new SnowFlakeIdGenerator54(1,9);
+        IdGenerator idGenerator1 = new SnowFlakeIdGenerator54(0, 8);
+        IdGenerator idGenerator2 = new SnowFlakeIdGenerator54(1, 9);
 
-        for (int i = 0 ; i < 100 ; ++i)
+        for (int i = 0; i < 100; ++i)
         {
             System.out.println("idGenerator1 " + idGenerator1.generateId());
             System.out.println("idGenerator2 " + idGenerator2.generateId());
@@ -35,14 +35,14 @@ public class IdGeneratorTest
     @Test
     public void test02() throws Exception
     {
-        ConcurrentHashMap<Long,Long> map = new ConcurrentHashMap<>();
-        IdGenerator idGenerator = new SnowFlakeIdGenerator54(0,8);
+        ConcurrentHashMap<Long, Long> map = new ConcurrentHashMap<>();
+        IdGenerator idGenerator = new SnowFlakeIdGenerator54(0, 8);
         long begin = System.currentTimeMillis();
 
-        for (int j = 0 ; j < 100000; ++j)
+        for (int j = 0; j < 100000; ++j)
         {
             long id = idGenerator.generateId();
-            map.put(id,id);
+            map.put(id, id);
         }
 
         System.out.println("current time : " + (System.currentTimeMillis() - begin));
@@ -57,7 +57,7 @@ public class IdGeneratorTest
          * 经测试,如果 54 位的雪花ID生成器，如果START_EPOCH少于现在约4年左右，那么生成的ID就会溢出 2^53 - 1
          * 如果从现在开始，那么过4年，生成的ID才会溢出 2^53 - 1
          */
-        SnowFlakeIdGenerator54 idGenerator54 = new SnowFlakeIdGenerator54(0,8);
+        SnowFlakeIdGenerator54 idGenerator54 = new SnowFlakeIdGenerator54(0, 8);
         System.out.println((1L << 53) - 1);
         System.out.println(idGenerator54.generateId());
 
@@ -68,7 +68,7 @@ public class IdGeneratorTest
          * 经测试,如果 64 位的雪花ID生成器，如果START_EPOCH少于现在约34年左右，那么生成的ID就会溢出 2^63 - 1
          * 如果从现在开始，那么过34年，生成的ID才会溢出 2^63 - 1
          */
-        SnowFlakeIdGenerator64 idGenerator64 = new SnowFlakeIdGenerator64(0,512);
+        SnowFlakeIdGenerator64 idGenerator64 = new SnowFlakeIdGenerator64(0, 512);
         System.out.println((1L << 63) - 1);
         System.out.println(idGenerator64.generateId());
 
@@ -78,16 +78,16 @@ public class IdGeneratorTest
     @Test
     public void test04() throws Exception
     {
-        SnowFlakeIdGenerator64 idGenerator54 = new SnowFlakeIdGenerator64(0,512);
-        Map<String ,Long> map = new ConcurrentHashMap<>();
-        for (int i = 0 ; i < 50; ++i)
+        SnowFlakeIdGenerator64 idGenerator54 = new SnowFlakeIdGenerator64(0, 512);
+        Map<String, Long> map = new ConcurrentHashMap<>();
+        for (int i = 0; i < 50; ++i)
         {
-            new Thread(()->
+            new Thread(() ->
             {
-                for (int j = 0 ; j < 10000; ++j)
+                for (int j = 0; j < 10000; ++j)
                 {
                     long id = idGenerator54.generateId();
-                    map.put(String.valueOf(id),id);
+                    map.put(String.valueOf(id), id);
 
                 }
             }).start();
@@ -119,8 +119,8 @@ public class IdGeneratorTest
     {
         //编写 test06 的时间是: 2020/04/06
         //那么只要将时间定为: 2016/04/06 就差不多可以测出54次方的时间戳的范围
-       IdGenerator idGenerator = new SnowFlakeIdGenerator54(0,8, LocalDateTime.of(2015,12,1,0,0));
-       System.out.println(idGenerator.generateId());
+        IdGenerator idGenerator = new SnowFlakeIdGenerator54(0, 8, LocalDateTime.of(2015, 12, 1, 0, 0));
+        System.out.println(idGenerator.generateId());
         System.out.println((1L << 53) - 1);
     }
 
@@ -138,7 +138,7 @@ public class IdGeneratorTest
     @Test
     public void test08() throws Exception
     {
-        IdGenerator idGenerator = new SnowFlakeIdGenerator64(0,256,LocalDateTime.of(1985,6,14,0,0));
+        IdGenerator idGenerator = new SnowFlakeIdGenerator64(0, 256, LocalDateTime.of(1985, 6, 14, 0, 0));
         System.out.println(idGenerator.generateId());
         System.out.println(Long.MAX_VALUE);
     }

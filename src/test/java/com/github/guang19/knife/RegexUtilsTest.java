@@ -119,22 +119,22 @@ public class RegexUtilsTest
 
         System.out.println(".）（a".matches("[+\\[\\]~`～！!@#￥$%……^&*×()（）_=\\-—【】{};'\":：；;\\t、|《》<>?/\\\\.,\"\"“”，。]*"));
 
-        System.out.println("asdasd.?{}()aa".replaceAll("[+\\[\\]~`～！!@#￥$%……^&*×()（）_=\\-—【】{};'\":：；;\\t、|《》<>?/\\\\.,\"\"“”，。]*",""));
+        System.out.println("asdasd.?{}()aa".replaceAll("[+\\[\\]~`～！!@#￥$%……^&*×()（）_=\\-—【】{};'\":：；;\\t、|《》<>?/\\\\.,\"\"“”，。]*", ""));
     }
 
     @Test
     public void test06() throws Exception
     {
         String html = "<!DOCTYPE html>\n" +
-            "<html lang=\"en\">\n" +
-            "<head>\n" +
-            "    <meta charset=\"UTF-8\">\n" +
-            "    <title>Title</title>\n" +
-            "</head>\n" +
-            "<body>\n" +
-            "asdasdas\n" +
-            "</body>\n" +
-            "</html>";
+                "<html lang=\"en\">\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <title>Title</title>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "asdasdas\n" +
+                "</body>\n" +
+                "</html>";
         System.out.println(RegexUtils.replaceHtml(html).trim());
         System.out.println(RegexUtils.replaceHtml(html).trim().length());
     }

@@ -38,36 +38,38 @@ public abstract class AbstractMailSender implements MailSender
 
     /**
      * 创建通用邮件
-     * @param subject       邮件标题
-     * @param from          发送者
-     * @param receivers     接受者
-     * @return              邮件message
+     *
+     * @param subject   邮件标题
+     * @param from      发送者
+     * @param receivers 接受者
+     * @return 邮件message
      * @throws MessagingException 邮件异常
      */
-    private Message newCommonMailMessage(String subject , String from , String ...receivers) throws MessagingException
+    private Message newCommonMailMessage(String subject, String from, String... receivers) throws MessagingException
     {
         Message message = new MimeMessage(mailSession);
         message.setSubject(subject);
         message.setFrom(new InternetAddress(from));
         InternetAddress[] receiverAddress = new InternetAddress[receivers.length];
-        for (int i = 0 ; i < receivers.length ; ++i)
+        for (int i = 0; i < receivers.length; ++i)
         {
             receiverAddress[i] = new InternetAddress(receivers[i]);
         }
-        message.addRecipients(receiveType,receiverAddress);
+        message.addRecipients(receiveType, receiverAddress);
         return message;
     }
 
 
     /**
      * 创建普通文本邮件
+     *
      * @param subject   邮件标题
      * @param text      邮件正文文本内容
      * @param from      发送者
      * @param receivers 接受者，允许接受多个接受者
-     * @return          文本邮件message
+     * @return 文本邮件message
      */
-    protected Message createTextMessage(String subject, String text , String from , String ...receivers)
+    protected Message createTextMessage(String subject, String text, String from, String... receivers)
     {
         try
         {
@@ -77,7 +79,7 @@ public abstract class AbstractMailSender implements MailSender
         }
         catch (MessagingException e)
         {
-            throw new RuntimeException("an exception occurred while creating mail message.",e);
+            throw new RuntimeException("an exception occurred while creating mail message.", e);
         }
     }
 
@@ -90,7 +92,7 @@ public abstract class AbstractMailSender implements MailSender
      * @param fileName  附件内容
      * @param from      发送者
      * @param receivers 接受者，允许接受多个接受者
-     * @return          文本邮件message
+     * @return 文本邮件message
      */
     protected Message createTextMessageWithAttachment(String subject, String text, String file, String fileName, String from, String... receivers)
     {
@@ -99,16 +101,17 @@ public abstract class AbstractMailSender implements MailSender
             //设置附件源
             DataSource dataSource = new FileDataSource(new File(file));
             DataHandler dataHandler = new DataHandler(dataSource);
-            return createTextMessageWithAttachment(subject,text,dataHandler,fileName,from,receivers);
+            return createTextMessageWithAttachment(subject, text, dataHandler, fileName, from, receivers);
         }
         catch (Exception e)
         {
-            throw new RuntimeException("an exception occurred while creating mail message.",e);
+            throw new RuntimeException("an exception occurred while creating mail message.", e);
         }
     }
 
     /**
      * 创建带附件的文本邮件
+     *
      * @param subject    邮件标题
      * @param text       邮件正文文本内容
      * @param fileStream 附件内容流
@@ -116,33 +119,35 @@ public abstract class AbstractMailSender implements MailSender
      * @param fileName   附件名
      * @param from       发送者
      * @param receivers  接受者，允许接受多个接受者
-     * @return           文本邮件message
+     * @return 文本邮件message
      */
     protected Message createTextMessageWithAttachment(String subject, String text, InputStream fileStream, String type, String fileName, String from, String... receivers)
     {
         try
         {
             //设置附件源
-            DataSource dataSource = new ByteArrayDataSource(fileStream,type);
+            DataSource dataSource = new ByteArrayDataSource(fileStream, type);
             DataHandler dataHandler = new DataHandler(dataSource);
-            return createTextMessageWithAttachment(subject,text,dataHandler,fileName,from,receivers);
+            return createTextMessageWithAttachment(subject, text, dataHandler, fileName, from, receivers);
         }
         catch (Exception e)
         {
-            throw new RuntimeException("an exception occurred while creating mail message.",e);
+            throw new RuntimeException("an exception occurred while creating mail message.", e);
         }
     }
 
-    /**文本邮件message
+    /**
+     * 文本邮件message
      * 创建带附件的文本邮件
-     * @param subject         邮件标题
-     * @param text            邮件正文文本内容
-     * @param dataHandler     附件源
-     * @param fileName        附件名
-     * @param from            发送者
-     * @param receivers       接受者
-     * @return                文本邮件message
-     * @throws MessagingException   创建邮件时的异常
+     *
+     * @param subject     邮件标题
+     * @param text        邮件正文文本内容
+     * @param dataHandler 附件源
+     * @param fileName    附件名
+     * @param from        发送者
+     * @param receivers   接受者
+     * @return 文本邮件message
+     * @throws MessagingException 创建邮件时的异常
      */
     private Message createTextMessageWithAttachment(String subject, String text, DataHandler dataHandler, String fileName, String from, String... receivers)
             throws MessagingException
@@ -167,29 +172,31 @@ public abstract class AbstractMailSender implements MailSender
 
     /**
      * 创建html邮件
+     *
      * @param subject   邮件标题
      * @param content   html邮件内容
      * @param from      发送者
      * @param receivers 接受者，允许接受多个接受者
-     * @return          html邮件message
+     * @return html邮件message
      */
-    protected Message createHtmlMessage(String subject, String content , String from , String ...receivers)
+    protected Message createHtmlMessage(String subject, String content, String from, String... receivers)
     {
         try
         {
             Message message = newCommonMailMessage(subject, from, receivers);
-            message.setContent(content,"text/html;charset=utf-8");
+            message.setContent(content, "text/html;charset=utf-8");
             return message;
         }
         catch (MessagingException e)
         {
-            throw new RuntimeException("an exception occurred while creating mail message.",e);
+            throw new RuntimeException("an exception occurred while creating mail message.", e);
         }
     }
 
 
     /**
      * 创建带附件的html邮件
+     *
      * @param subject   邮件标题
      * @param content   html邮件内容
      * @param file      附件
@@ -205,17 +212,18 @@ public abstract class AbstractMailSender implements MailSender
             //设置附件源
             DataSource dataSource = new FileDataSource(new File(file));
             DataHandler dataHandler = new DataHandler(dataSource);
-            return createHtmlMessageWithAttachment(subject,content,dataHandler,fileName,from,receivers);
+            return createHtmlMessageWithAttachment(subject, content, dataHandler, fileName, from, receivers);
         }
         catch (Exception e)
         {
-            throw new RuntimeException("an exception occurred while creating mail message.",e);
+            throw new RuntimeException("an exception occurred while creating mail message.", e);
         }
     }
 
 
     /**
      * 发送带附件的html邮件
+     *
      * @param subject    邮件标题
      * @param content    html邮件内容
      * @param fileStream 附件内容流
@@ -231,35 +239,36 @@ public abstract class AbstractMailSender implements MailSender
         try
         {
             //设置附件源
-            DataSource dataSource = new ByteArrayDataSource(fileStream,type);
+            DataSource dataSource = new ByteArrayDataSource(fileStream, type);
             DataHandler dataHandler = new DataHandler(dataSource);
-            return createHtmlMessageWithAttachment(subject,content,dataHandler,fileName,from,receivers);
+            return createHtmlMessageWithAttachment(subject, content, dataHandler, fileName, from, receivers);
         }
         catch (Exception e)
         {
-            throw new RuntimeException("an exception occurred while creating mail message.",e);
+            throw new RuntimeException("an exception occurred while creating mail message.", e);
         }
     }
 
 
     /**
      * 创建带附件的html邮件
-     * @param subject         邮件标题
-     * @param content         html邮件内容
-     * @param dataHandler     附件源
-     * @param fileName        附件名
-     * @param from            发送者
-     * @param receivers       接受者
-     * @return                html邮件message
-     * @throws MessagingException   创建邮件时的异常
+     *
+     * @param subject     邮件标题
+     * @param content     html邮件内容
+     * @param dataHandler 附件源
+     * @param fileName    附件名
+     * @param from        发送者
+     * @param receivers   接受者
+     * @return html邮件message
+     * @throws MessagingException 创建邮件时的异常
      */
-    private Message createHtmlMessageWithAttachment(String subject, String content,DataHandler dataHandler, String fileName, String from, String... receivers)
+    private Message createHtmlMessageWithAttachment(String subject, String content, DataHandler dataHandler, String fileName, String from, String... receivers)
             throws MessagingException
     {
-        Message message = newCommonMailMessage(subject,from,receivers);
+        Message message = newCommonMailMessage(subject, from, receivers);
 
         BodyPart part1 = new MimeBodyPart();
-        part1.setContent(content,"text/html;charset=utf-8");
+        part1.setContent(content, "text/html;charset=utf-8");
 
         //设置附件资源
         BodyPart part2 = new MimeBodyPart();
@@ -275,9 +284,9 @@ public abstract class AbstractMailSender implements MailSender
     }
 
 
-
     /**
      * 发送邮件
+     *
      * @param message 邮件
      */
     protected void sendMessage(Message message)
@@ -288,7 +297,7 @@ public abstract class AbstractMailSender implements MailSender
         }
         catch (MessagingException e)
         {
-            throw new RuntimeException("an exception occurred while sending mail message.",e);
+            throw new RuntimeException("an exception occurred while sending mail message.", e);
         }
     }
 }

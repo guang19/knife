@@ -61,6 +61,7 @@ public enum CommonRegexExpression
 
     /**
      * 构造函数
+     *
      * @param pattern 正则表达式pattern
      */
     private CommonRegexExpression(String pattern)
@@ -70,6 +71,7 @@ public enum CommonRegexExpression
 
     /**
      * getter
+     *
      * @return 正则表达式pattern
      */
     public String getPattern()
