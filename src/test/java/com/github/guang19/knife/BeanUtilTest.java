@@ -68,6 +68,17 @@ public class BeanUtilTest
         {
             this.inner = inner;
         }
+
+        @Override
+        public String toString()
+        {
+            return "Person1{" +
+                    "id=" + id +
+                    ", name='" + name + '\'' +
+                    ", age=" + age +
+                    ", inner=" + inner +
+                    '}';
+        }
     }
 
 
@@ -119,6 +130,17 @@ public class BeanUtilTest
         public void setInner(Inner inner)
         {
             this.inner = inner;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "Person2{" +
+                    "id=" + id +
+                    ", name='" + name + '\'' +
+                    ", age=" + age +
+                    ", inner=" + inner +
+                    '}';
         }
     }
 
@@ -204,6 +226,17 @@ public class BeanUtilTest
         {
             this.inner = inner;
         }
+
+        @Override
+        public String toString()
+        {
+            return "Person3{" +
+                    "id=" + id +
+                    ", name='" + name + '\'' +
+                    ", age=" + age +
+                    ", inner='" + inner + '\'' +
+                    '}';
+        }
     }
 
     @Test
@@ -230,11 +263,11 @@ public class BeanUtilTest
         {
             if (arg instanceof Long)
             {
-                return (Long) arg;
+                return  arg;
             }
             if (arg instanceof Integer)
             {
-                return (Integer) arg;
+                return  arg;
             }
             if (arg instanceof Inner)
             {

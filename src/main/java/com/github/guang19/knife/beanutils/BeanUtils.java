@@ -1,7 +1,5 @@
 package com.github.guang19.knife.beanutils;
 
-import com.github.guang19.knife.AssertUtils;
-import com.github.guang19.knife.reflectionutils.ReflectionUtils;
 import net.sf.cglib.beans.BeanCopier;
 
 import java.util.List;
@@ -51,8 +49,6 @@ public class BeanUtils
      */
     public static <S, T> void copyProperties(S sourceObj, T targetObj, BeanFieldValTypeConverter beanFieldValTypeConverter)
     {
-        AssertUtils.exceptionIfObjNull(sourceObj, "Source object cannot be null.");
-        AssertUtils.exceptionIfObjNull(targetObj, "Target object cannot be null.");
         copy(sourceObj, targetObj, beanFieldValTypeConverter);
     }
 
@@ -88,8 +84,6 @@ public class BeanUtils
      */
     public static <S, T> List<T> createTargetCollection(List<S> sourceCollection, Class<T> targetCollectionElementType, BeanFieldValTypeConverter beanFieldValTypeConverter)
     {
-        AssertUtils.exceptionIfObjNull(sourceCollection, "Source collection cannot be null.");
-        AssertUtils.exceptionIfObjNull(targetCollectionElementType, "Target collection element type cannot be null.");
         return sourceCollection.
                 stream().
                 map(element ->
@@ -145,8 +139,6 @@ public class BeanUtils
      */
     public static <S, T> Set<T> createTargetCollection(Set<S> sourceCollection, Class<T> targetCollectionElementType, BeanFieldValTypeConverter beanFieldValTypeConverter)
     {
-        AssertUtils.exceptionIfObjNull(sourceCollection, "Source collection cannot be null.");
-        AssertUtils.exceptionIfObjNull(targetCollectionElementType, "Target collection element type cannot be null.");
         return sourceCollection.
                 stream().
                 map(element ->
@@ -201,8 +193,6 @@ public class BeanUtils
      */
     public static <S, T> T createTargetObj(S sourceObj, Class<T> targetClass, BeanFieldValTypeConverter beanFieldValTypeConverter)
     {
-        AssertUtils.exceptionIfObjNull(sourceObj, "Source object cannot be null.");
-        AssertUtils.exceptionIfObjNull(targetClass, "Target class cannot be null.");
         try
         {
             return create(sourceObj, targetClass, beanFieldValTypeConverter);
@@ -230,7 +220,7 @@ public class BeanUtils
             throws Throwable
     {
         //以默认构造器创建目标对象
-        T target = ReflectionUtils.createInstanceWithDefaultConstructor(targetClass);
+        T target = targetClass.getConstructor().newInstance();
         copy(sourceObj, target, beanFieldValTypeConverter);
         return target;
     }
