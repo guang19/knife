@@ -8,7 +8,7 @@
 | ~~IdGenerator~~  | ~~id生成器。目前有64位雪花ID生成器和54位雪花Id生成器实现，54位雪花Id生成器是为了兼容前端JS的最大安全值。~~ |
 
 PS: 个人认为雪花ID不应该作为工具，而是作为一项服务。所以我将以RPC的方式改造美团Leaf，这项服务将会
-被我融合进我的项目：[service](https://github.com/guang19/service) 中。
+被我融合进我的项目：[leaf-rpc](https://github.com/guang19/leaf-rpc) 中。
 
 项目依赖:
 maven:
