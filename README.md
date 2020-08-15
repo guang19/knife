@@ -5,16 +5,17 @@
 |    工具模块       |      描述         |
 | :---:            |     :----:       |
 | BeanUtils        | 提供对象与对象之间的转换功能,并且能根据指定的对象，创建目标对象，把指定的对象的属性值赋值目标对象。|
-| IdGenerator      | id生成器。目前有64位雪花ID生成器和54位雪花Id生成器实现，54位雪花Id生成器是为了兼容前端JS的最大安全值。  |
+| ~~IdGenerator~~  | ~~id生成器。目前有64位雪花ID生成器和54位雪花Id生成器实现，54位雪花Id生成器是为了兼容前端JS的最大安全值。~~ |
 
+PS: 个人认为雪花ID不应该作为工具，而是作为一项服务。所以我将以RPC的方式改造美团Leaf，这项服务将会
+被我融合进我的项目：[service](https://github.com/guang19/service) 中。
 
-使用:
-
+项目依赖:
 maven:
 ````text
  <groupId>com.github.guang19</groupId>
  <artifactId>knife</artifactId>
- <version>3.0.0</version>
+ <version>3.1.0</version>
 ````
 
 ### BeanUtils
@@ -24,8 +25,8 @@ BeanUtils应该是各位同学经常使用的工具，我也对比各个BeanUtil
 BeanUtils的使用Demo见: [测试](https://github.com/guang19/knife/blob/master/src/test/java/com/github/guang19/knife/BeanUtilTest.java)
 
 普通对象的属性拷贝:
-````text
 
+````text
 Person1 person1 = new Person1();
 person1.setId(1L);
 person1.setAge(19);
@@ -34,36 +35,35 @@ person1.setInner(new Inner());
 
 Person2 person2 = new Person2();
 
-BeanUtils.copyProperties(person1,person2);
-
+BeanUtils.copy(person1,person2);c
 ````
 
 根据已有对象，创建目标类型的对象:
+
 ````text
  Person1 person1 = new Person1();
  person1.setId(1L);
  person1.setAge(19);
  person1.setName("yxg");
 
- BeanUtils.createTargetObj(person1,Person2.class)
+ BeanUtils.createNewTypeObj(person1,Person2.class)
 ````
 
 根据已有对象集合，创建目标类型的对象集合:
-````text
 
+````text
 List<Person1> person1List = new ArrayList<>();
 person1List.add(person1);
 person1List.add(person2);
 
-List<Person2> person2List = BeanUtils.createTargetCollection(person1List, Person2.class);
+List<Person2> person2List = BeanUtils.createNewTypeCollection(person1List, Person2.class);
 ````
 
 且BeanUtils还支持bean字段值的类型转换,只需要写一个函数式接口:BeanFieldValTypeConverter 就行了。
 
 假设有以下2个类: Person1 和 Person2
-````text
 
-     
+````text
 public class Inner{}
      
 public class Person1
@@ -101,6 +101,7 @@ public class Person2
 ````
 
 普通的BeanUtils是这样的：
+
 ````text
   Person1 person1 = new Person1(1L,"yxg",19,new Inner);
   Person2 person2 = new Person2();
@@ -137,14 +138,13 @@ public class Person2
   }
 
 //执行copy方法时指定converter就行了
-BeanUtil.copyProperties(person1,person2,converter);
+BeanUtil.copy(person1,person2,converter);
 
 //结果如下:
 person2{id:1L,name:"yxg",age:19, inner::toString()};
-
 `````
 
-### IdGenerator
+### ~~IdGenerator~~
 
 ID生成器。相信各位同学或多或少都了解一点关于唯一ID的生成策略，我这里就简单介绍一下吧:
 - 自增ID: 适用于单机或少量集群的应用环境，如果数据库实例过多，那么ID将会重复。
@@ -169,8 +169,3 @@ ID生成器。相信各位同学或多或少都了解一点关于唯一ID的生�
 ````text
 ((1L << 41) / (1000L * 60 * 60 * 24 * 365)) = 69年
 ````
-**我实现的54位雪花ID不仅压缩了时间戳部分，还压缩了机器ID和每毫秒的并发量，没办法，这就是代价。
-至于具体压缩了多少，我只能说很多，别看64位到54位只是10位的差距，但是要想平衡好这10位的代价，是不容易的。。**
-
-54位的实现见: [SnowFlakeIdGenerator54](https://github.com/guang19/knife/blob/master/src/main/java/com/github/guang19/knife/idgenerator/impl/snowflakeidgenerator/SnowFlakeIdGenerator54.java)
-64位的实现见: [SnowFlakeIdGenerator64](https://github.com/guang19/knife/blob/master/src/main/java/com/github/guang19/knife/idgenerator/impl/snowflakeidgenerator/SnowFlakeIdGenerator64.java)

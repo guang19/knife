@@ -7,7 +7,7 @@ package com.github.guang19.knife.beanutils;
  */
 
 @FunctionalInterface
-public interface BeanFieldValTypeConverter
+public interface BeanFieldValueConverter
 {
 
     /**
@@ -73,8 +73,7 @@ public interface BeanFieldValTypeConverter
      *  而此接口就是为了解决这个问题而生的，你可以定义你想要转换的属性的值。
      *
      *  它的lambda写法如下:
-     *
-     *   BeanFieldValTypeConverter converter = fieldVal ->
+     *   BeanFieldValueConverter converter = fieldVal ->
      *   {
      *       //如果当前拷贝的属性值是 age 属性
      *       if(fieldVal instanceof Integer)
@@ -116,5 +115,5 @@ public interface BeanFieldValTypeConverter
      * @param fieldVal 属性值
      * @return 转换后的属性值
      */
-    public abstract Object convertFieldValType(Object fieldVal);
+    public abstract Object convertFieldValue(Object fieldVal);
 }

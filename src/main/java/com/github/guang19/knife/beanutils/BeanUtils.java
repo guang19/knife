@@ -1,6 +1,8 @@
 package com.github.guang19.knife.beanutils;
 
 import net.sf.cglib.beans.BeanCopier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,27 +17,28 @@ import java.util.stream.Collectors;
  */
 public class BeanUtils
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BeanUtils.class);
 
     //使用过的BeanCopier将加入缓存
     private static final ConcurrentHashMap<String, BeanCopier> beanCopierCache;
 
     static
     {
-        beanCopierCache = new ConcurrentHashMap<>();
+        beanCopierCache = new ConcurrentHashMap<>(8);
     }
 
 
     /**
-     * <p>将源对象属性拷贝到目标对象属性</p>
+     * <p>默认拷贝</p>
      *
      * @param sourceObj 源对象
      * @param targetObj 目标对象
      * @param <S>       Source Class
      * @param <T>       Target Class
      */
-    public static <S, T> void copyProperties(S sourceObj, T targetObj)
+    public static <S, T> void copy(S sourceObj, T targetObj)
     {
-        copyProperties(sourceObj, targetObj, null);
+        shallowCopy(sourceObj, targetObj, null);
     }
 
     /**
@@ -43,18 +46,18 @@ public class BeanUtils
      *
      * @param sourceObj                 源对象
      * @param targetObj                 目标对象
-     * @param beanFieldValTypeConverter bean属性值转换器
+     * @param beanFieldValueConverter bean属性值转换器
      * @param <S>                       Source Class
      * @param <T>                       Target Class
      */
-    public static <S, T> void copyProperties(S sourceObj, T targetObj, BeanFieldValTypeConverter beanFieldValTypeConverter)
+    public static <S, T> void copy(S sourceObj, T targetObj, BeanFieldValueConverter beanFieldValueConverter)
     {
-        copy(sourceObj, targetObj, beanFieldValTypeConverter);
+        shallowCopy(sourceObj, targetObj, beanFieldValueConverter);
     }
 
     /**
      * <p>
-     * 将一种类型的集合转为另一种类型的集合.
+     * 根据源类型的集合创建另一种类型的集合
      * 即使转换失败,最终返回的集合也不会有null元素。
      * </p>
      *
@@ -64,25 +67,25 @@ public class BeanUtils
      * @param <T>                         Target Class
      * @return 目标类型元素的集合
      */
-    public static <S, T> List<T> createTargetCollection(List<S> sourceCollection, Class<T> targetCollectionElementType)
+    public static <S, T> List<T> createNewTypeCollection(List<S> sourceCollection, Class<T> targetCollectionElementType)
     {
-        return createTargetCollection(sourceCollection, targetCollectionElementType, null);
+        return createNewTypeCollection(sourceCollection, targetCollectionElementType, null);
     }
 
     /**
      * <p>
-     * 使用转换器定义的规则,将一种类型的集合转为另一种类型的集合.
+     * 根据源类型的集合，并以BeanFieldValueConverter定义的规则 创建另一种类型的集合,
      * 即使转换失败,最终返回的集合也不会有null元素。
      * </p>
      *
      * @param sourceCollection            源集合
      * @param targetCollectionElementType 目标集合元素类型
-     * @param beanFieldValTypeConverter   bean属性值转换器
+     * @param beanFieldValueConverter   bean属性值转换器
      * @param <S>                         Source Class
      * @param <T>                         Target Class
      * @return 目标类型元素的集合
      */
-    public static <S, T> List<T> createTargetCollection(List<S> sourceCollection, Class<T> targetCollectionElementType, BeanFieldValTypeConverter beanFieldValTypeConverter)
+    public static <S, T> List<T> createNewTypeCollection(List<S> sourceCollection, Class<T> targetCollectionElementType, BeanFieldValueConverter beanFieldValueConverter)
     {
         return sourceCollection.
                 stream().
@@ -92,11 +95,16 @@ public class BeanUtils
                     {
                         try
                         {
-                            return create(element, targetCollectionElementType, beanFieldValTypeConverter);
+                            return create(element, targetCollectionElementType, beanFieldValueConverter);
                         }
-                        catch (Throwable e)
+                        catch (ReflectiveOperationException e)
                         {
-                            //不做处理
+                            if (LOGGER.isDebugEnabled())
+                            {
+                                LOGGER.debug("captured an exception when using [BeanUtils] create object of class type : [{}]" , targetCollectionElementType);
+                                e.printStackTrace();
+                            }
+                            LOGGER.error("captured an exception when using [BeanUtils] create object of class type : [{}]" , targetCollectionElementType);
                         }
                     }
                     return null;
@@ -108,7 +116,7 @@ public class BeanUtils
 
     /**
      * <p>
-     * 将一种类型的集合转为另一种类型的集合.
+     * 根据源类型的集合创建另一种类型的集合
      * 即使转换失败,最终返回的集合也不会有null元素。
      * </p>
      *
@@ -118,26 +126,27 @@ public class BeanUtils
      * @param <T>                         Target Class
      * @return 目标类型元素的集合
      */
-    public static <S, T> Set<T> createTargetCollection(Set<S> sourceCollection, Class<T> targetCollectionElementType)
+    public static <S, T> Set<T> createNewTypeCollection(Set<S> sourceCollection, Class<T> targetCollectionElementType)
     {
-        return createTargetCollection(sourceCollection, targetCollectionElementType, null);
+        return createNewTypeCollection(sourceCollection, targetCollectionElementType, null);
     }
 
 
     /**
      * <p>
-     * 将一种类型的集合转为另一种类型的集合.
+     * 根据源类型的集合，并以BeanFieldValueConverter定义的规则 创建另一种类型的集合,
      * 即使转换失败,最终返回的集合也不会有null元素。
      * </p>
      *
      * @param sourceCollection            源集合
      * @param targetCollectionElementType 目标集合元素类型
-     * @param beanFieldValTypeConverter   bean属性值转换器
+     * @param beanFieldValueConverter   bean属性值转换器
      * @param <S>                         Source Class
      * @param <T>                         Target Class
      * @return 目标类型元素的集合
      */
-    public static <S, T> Set<T> createTargetCollection(Set<S> sourceCollection, Class<T> targetCollectionElementType, BeanFieldValTypeConverter beanFieldValTypeConverter)
+    public static <S, T> Set<T> createNewTypeCollection(Set<S> sourceCollection, Class<T> targetCollectionElementType,
+                                                       BeanFieldValueConverter beanFieldValueConverter)
     {
         return sourceCollection.
                 stream().
@@ -147,11 +156,16 @@ public class BeanUtils
                     {
                         try
                         {
-                            return create(element, targetCollectionElementType, beanFieldValTypeConverter);
+                            return create(element, targetCollectionElementType, beanFieldValueConverter);
                         }
-                        catch (Throwable e)
+                        catch (ReflectiveOperationException e)
                         {
-                            //不做处理
+                            if (LOGGER.isDebugEnabled())
+                            {
+                                LOGGER.debug("captured an exception when using [BeanUtils] create object of class type : [{}]" , targetCollectionElementType);
+                                e.printStackTrace();
+                            }
+                            LOGGER.error("captured an exception when using [BeanUtils] create object of class type : [{}]" , targetCollectionElementType);
                         }
                     }
                     return null;
@@ -163,7 +177,7 @@ public class BeanUtils
 
     /**
      * <p>
-     * 创建目标对象，并将源对象的属性拷贝到目标对象。
+     * 根据源对象创建目标对象，并将源对象的属性拷贝到目标对象。
      * 如果目标对象没有默认构造方法或者创建目标对象失败，都将返回null
      * </p>
      *
@@ -173,55 +187,60 @@ public class BeanUtils
      * @param <T>         Target Class
      * @return 填充属性后的目标对象(浅拷贝)
      */
-    public static <S, T> T createTargetObj(S sourceObj, Class<T> targetClass)
+    public static <S, T> T createNewTypeObj(S sourceObj, Class<T> targetClass)
     {
-        return createTargetObj(sourceObj, targetClass, null);
+        return createNewTypeObj(sourceObj, targetClass, null);
     }
 
     /**
      * <p>
-     * 创建目标对象，并根据bean属性值转换器定义的转换规则将源对象的属性拷贝到目标对象。
+     * 根据源对象创建目标对象，并根据BeanFieldValueConverter定义的转换规则将源对象的属性拷贝到目标对象。
      * 如果目标对象没有默认构造方法或者创建目标对象失败，都将返回null
      * </p>
      *
      * @param sourceObj                 源对象
      * @param targetClass               目标Class
-     * @param beanFieldValTypeConverter bean属性值转换器
+     * @param beanFieldValueConverter bean属性值转换器
      * @param <S>                       Source Class
      * @param <T>                       Target Class
      * @return 填充属性后的目标对象(浅拷贝)
      */
-    public static <S, T> T createTargetObj(S sourceObj, Class<T> targetClass, BeanFieldValTypeConverter beanFieldValTypeConverter)
+    public static <S, T> T createNewTypeObj(S sourceObj, Class<T> targetClass, BeanFieldValueConverter beanFieldValueConverter)
     {
         try
         {
-            return create(sourceObj, targetClass, beanFieldValTypeConverter);
+            return create(sourceObj, targetClass, beanFieldValueConverter);
         }
-        catch (Throwable e)
+        catch (ReflectiveOperationException e)
         {
-            //不做处理
+            if (LOGGER.isDebugEnabled())
+            {
+                LOGGER.debug("captured an exception when using [BeanUtils] create object of class type : [{}]" , targetClass);
+                e.printStackTrace();
+            }
+            LOGGER.error("captured an exception when using [BeanUtils] create object of class type : [{}]" , targetClass);
             return null;
         }
     }
 
 
     /**
-     * <p>以源对象创建目标Class对象</p>
+     * <p>根据源对象创建目标Class对象</p>
      *
      * @param sourceObj                 源对象
      * @param targetClass               目标Class
-     * @param beanFieldValTypeConverter bean属性值转换器
+     * @param beanFieldValueConverter bean属性值转换器
      * @param <S>                       Source Class
      * @param <T>                       Target Class
      * @return 填充属性后的目标对象(浅拷贝)
-     * @throws Throwable 反射创建对象时的异常
+     * @throws ReflectiveOperationException 反射创建对象时的异常
      */
-    private static <S, T> T create(S sourceObj, Class<T> targetClass, BeanFieldValTypeConverter beanFieldValTypeConverter)
-            throws Throwable
+    private static <S, T> T create(S sourceObj, Class<T> targetClass, BeanFieldValueConverter beanFieldValueConverter)
+            throws ReflectiveOperationException
     {
         //以默认构造器创建目标对象
         T target = targetClass.getConstructor().newInstance();
-        copy(sourceObj, target, beanFieldValTypeConverter);
+        shallowCopy(sourceObj, target, beanFieldValueConverter);
         return target;
     }
 
@@ -231,32 +250,32 @@ public class BeanUtils
      *
      * @param sourceObj                 源对象
      * @param targetObj                 目标对象
-     * @param beanFieldValTypeConverter bean属性值转换器
+     * @param beanFieldValueConverter bean属性值转换器
      */
-    private static void copy(Object sourceObj, Object targetObj, BeanFieldValTypeConverter beanFieldValTypeConverter)
+    private static void shallowCopy(Object sourceObj, Object targetObj, BeanFieldValueConverter beanFieldValueConverter)
     {
-        getCachedBeanCopier(sourceObj.getClass(), targetObj.getClass(), beanFieldValTypeConverter).
+        getCachedBeanCopier(sourceObj.getClass(), targetObj.getClass(), beanFieldValueConverter).
                 copy(sourceObj, targetObj,
-                        beanFieldValTypeConverter == null ? null :
-                                (fieldVal, clazz, obj) -> beanFieldValTypeConverter.convertFieldValType(fieldVal));
+                        beanFieldValueConverter == null ? null :
+                                (fieldVal, clazz, obj) -> beanFieldValueConverter.convertFieldValue(fieldVal));
     }
 
     /**
-     * <p>获取已缓存的BeanCopier，如果没有就创建</p>
+     * <p>获取已缓存的BeanCopier</p>
      *
      * @param sourceClass               源对象class
      * @param targetClass               目标对象class
-     * @param beanFieldValTypeConverter bean属性值转换器
+     * @param beanFieldValueConverter bean属性值转换器
      * @return BeanCopier
      */
-    private static BeanCopier getCachedBeanCopier(Class<?> sourceClass, Class<?> targetClass, BeanFieldValTypeConverter beanFieldValTypeConverter)
+    private static BeanCopier getCachedBeanCopier(Class<?> sourceClass, Class<?> targetClass, BeanFieldValueConverter beanFieldValueConverter)
     {
-        BeanCopier beanCopier = null;
-        String beanCopierClassKey = generateBeanCopierClassKey(sourceClass, targetClass, beanFieldValTypeConverter);
-        if ((beanCopier = beanCopierCache.get(beanCopierClassKey)) == null)
+        BeanCopier beanCopier;
+        String beanCopierCacheKey = generateBeanCopierCacheKey(sourceClass, targetClass, beanFieldValueConverter);
+        if ((beanCopier = beanCopierCache.get(beanCopierCacheKey)) == null)
         {
-            beanCopierCache.put(beanCopierClassKey, beanCopier =
-                    createBeanCopier(sourceClass, targetClass, beanFieldValTypeConverter));
+            beanCopierCache.put(beanCopierCacheKey, beanCopier =
+                    createBeanCopier(sourceClass, targetClass, beanFieldValueConverter));
         }
         return beanCopier;
     }
@@ -266,12 +285,12 @@ public class BeanUtils
      *
      * @param sourceClass               源对象Class
      * @param targetClass               目标对象Class
-     * @param beanFieldValTypeConverter bean属性值转换器
+     * @param beanFieldValueConverter bean属性值转换器
      * @return BeanCopier
      */
-    private static BeanCopier createBeanCopier(Class<?> sourceClass, Class<?> targetClass, BeanFieldValTypeConverter beanFieldValTypeConverter)
+    private static BeanCopier createBeanCopier(Class<?> sourceClass, Class<?> targetClass, BeanFieldValueConverter beanFieldValueConverter)
     {
-        return beanFieldValTypeConverter == null ? BeanCopier.create(sourceClass, targetClass, false) :
+        return beanFieldValueConverter == null ? BeanCopier.create(sourceClass, targetClass, false) :
                 BeanCopier.create(sourceClass, targetClass, true);
     }
 
@@ -280,22 +299,22 @@ public class BeanUtils
      *
      * @param clazz1                    class1
      * @param clazz2                    class2
-     * @param beanFieldValTypeConverter bean属性值转换器
+     * @param beanFieldValueConverter bean属性值转换器
      * @return string key
      */
-    private static String generateBeanCopierClassKey(Class<?> clazz1, Class<?> clazz2, BeanFieldValTypeConverter beanFieldValTypeConverter)
+    private static String generateBeanCopierCacheKey(Class<?> clazz1, Class<?> clazz2, BeanFieldValueConverter beanFieldValueConverter)
     {
-        return beanFieldValTypeConverter == null ? BEANCOPIER_CACHE_KEY_PREFIX + clazz1.getName() + CONNECTION_SYNBOL + clazz2.getName() :
+        return beanFieldValueConverter == null ? BEANCOPIER_CACHE_KEY_PREFIX + clazz1.getName() + CONNECTION_SYNBOL + clazz2.getName() :
                 BEANCOPIER_CACHE_KEY_PREFIX + clazz1.getName() + CONNECTION_SYNBOL + clazz2.getName() + BEANCOPIER_CACHE_KEY_SUFFIX;
     }
 
 
     //BeanCopier缓存key的前缀
-    private static final String BEANCOPIER_CACHE_KEY_PREFIX = "BEANCOPIER:";
+    private static final String BEANCOPIER_CACHE_KEY_PREFIX = "BEAN:";
 
     //BeanCopier缓存key的连接符
     private static final String CONNECTION_SYNBOL = "::";
 
     //BeanCopier缓存key的后缀
-    private static final String BEANCOPIER_CACHE_KEY_SUFFIX = "USE:BeanFieldValTypeConverter";
+    private static final String BEANCOPIER_CACHE_KEY_SUFFIX = "USE:BeanFieldValueConverter";
 }
