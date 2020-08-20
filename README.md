@@ -1,17 +1,18 @@
 # knife
 
-简单，实用的Java工具类，目前包含以下工具库:
+简单，实用的Java工具类，目前包含以下工具:
  
 |    工具模块       |      描述         |
 | :---:            |     :----:       |
 | BeanUtils        | 提供对象与对象之间的转换功能,并且能根据指定的对象，创建目标对象，把指定的对象的属性值赋值目标对象。|
+| RSA              | RSA加密算法                  |
 
 项目依赖:
 maven:
 ````text
  <groupId>com.github.guang19</groupId>
  <artifactId>knife</artifactId>
- <version>3.1.0</version>
+ <version>3.2.0</version>
 ````
 
 ### BeanUtils
@@ -139,3 +140,42 @@ BeanUtil.copy(person1,person2,converter);
 //结果如下:
 person2{id:1L,name:"yxg",age:19, inner::toString()};
 `````
+
+
+### RSA
+
+关于RSA相关知识可以阅读阮一峰前辈的文章： [RSA算法原理](http://www.ruanyifeng.com/blog/2013/06/rsa_algorithm_part_one.html)
+
+使用:
+
+````text
+//创建KeySize为1024的RSA加密解密工具
+RSA rsa = RSA.keySize1024();
+
+//生成公匙和私匙
+RSAKeyPair rsaKeyPair = rsa.generateKeyPair();
+
+//对 "guang19" 字符串进行加密
+String encrypt = rsa.encrypt("guang19", rsaKeyPair.getPublicKey());
+System.out.println(encrypt);
+
+//对加密后的密文进行解密
+String decrypt = rsa.decrypt(encrypt, rsaKeyPair.getPrivateKey());
+System.out.println(decrypt);
+
+//生成签名
+String sign = rsa.sign(encrypt, rsaKeyPair.getPrivateKey());
+System.out.println(sign);
+
+//检验签名
+boolean checkSign = rsa.checkSign(encrypt,sign,rsaKeyPair.getPublicKey());
+System.out.println(checkSign);
+````
+
+在这里说一下RSA如何作用于注册功能吧：
+
+1. 用户进入注册页面后，向后端请求公匙；
+2. 后端使用RSA生成RSAKeyPair密匙对，并将密匙对存入NoSQL数据库；
+3. 前端收到公匙后，用户提交用户名（邮箱）和密码（加密后的密文）等信息；
+4. 后端收到用户提交的信息后，使用私匙解密密码，校验信息成功后，使用其他加密算法（如argon2）对密码进行加密，
+最后将用户信息存入数据库，最后响应Cookie或Jwt。

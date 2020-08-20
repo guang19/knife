@@ -1,4 +1,4 @@
-package com.github.guang19.knife;
+package com.github.guang19.knife.beanutils;
 
 import com.github.guang19.knife.beanutils.BeanFieldValueConverter;
 import com.github.guang19.knife.beanutils.BeanUtils;
